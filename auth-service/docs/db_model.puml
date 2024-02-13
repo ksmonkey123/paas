@@ -1,0 +1,50 @@
+@startuml
+skinparam Linetype ortho
+
+entity Account {
+username : String
+--
+password : String
+enabled : Boolean
+admin : Boolean
+telegram_uid : Long? <<UQ>>
+}
+
+entity Token {
+token : UUID
+..
+username : String <<FK>>
+serviceName : String? <<FK>>
+--
+creationTime : Timestamp
+}
+
+entity Service {
+name : String
+--
+enabled : Boolean
+canImpersonate : Boolean
+}
+
+entity Role {
+id : String
+--
+description: String?
+}
+
+entity Authority {
+id : String
+--
+description: String?
+}
+
+' authorities
+Role }o--o{ Authority
+Account }o--o{ Role
+Service }o--o{ Role
+
+' tokens
+Token }o--|| Account
+Token }o--o| Service
+
+@enduml
