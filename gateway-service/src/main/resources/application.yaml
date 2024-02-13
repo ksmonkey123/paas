@@ -1,0 +1,15 @@
+spring:
+  webflux:
+    static-path-pattern: "/**"
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      default-filters:
+        - StripPrefix=2
+      routes:
+        - id: auth-service
+          predicates:
+            - Path=/rest/auth/**
+          uri: lb://auth-service

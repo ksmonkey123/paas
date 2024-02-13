@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    discovery:
+      client:
+        simple:
+          instances:
+            auth-service:
+              - uri: http://auth-service/
