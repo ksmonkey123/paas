@@ -1,7 +1,8 @@
 <div class="page-body">
-  <button mat-button type="button" routerLink="/">
-    <mat-icon>arrow_back_ios</mat-icon>
-    Back
+  <h1>Manage Account</h1>
+  <button mat-flat-button color="primary" type="button" routerLink="/">
+    <mat-icon>close</mat-icon>
+    Close
   </button>
   <mat-card>
     <mat-card-header>
@@ -24,14 +25,6 @@
           <input matInput type="password" formControlName="confirmPassword" required>
         </mat-form-field>
         <br/>
-        <p class="failureBanner" *ngIf="pwError">
-          <mat-icon>warning</mat-icon>
-          {{ pwError }}
-        </p>
-        <p class="successBanner" *ngIf="pwSuccess">
-          <mat-icon>warning</mat-icon>
-          Password Change Successful
-        </p>
         <button mat-raised-button type="submit" color="primary"
                 [disabled]="!pwForm.valid || pwForm.value.newPassword != pwForm.value.confirmPassword">
           <mat-icon>check</mat-icon>

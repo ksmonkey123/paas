@@ -13,8 +13,8 @@ import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {MatIcon} from "@angular/material/icon";
 import {MatButton} from "@angular/material/button";
-import {NgIf} from "@angular/common";
 import {RouterLink} from "@angular/router";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-password-change',
@@ -29,15 +29,14 @@ import {RouterLink} from "@angular/router";
     MatLabel,
     MatIcon,
     MatButton,
-    NgIf,
     RouterLink,
   ],
-  templateUrl: './manage-account.component.html',
-  styleUrl: './manage-account.component.scss'
+  templateUrl: './account-settings.component.html',
+  styleUrl: './account-settings.component.scss'
 })
-export class ManageAccountComponent {
+export class AccountSettingsComponent {
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private toastr: ToastrService) {
   }
 
   pwForm = new FormGroup({
@@ -52,20 +51,14 @@ export class ManageAccountComponent {
     }]),
   })
 
-  pwError ?: string
-  pwSuccess = false
-
   onChangePassword() {
-    this.pwError = undefined
-    this.pwSuccess = false
-
     this.authService.changePassword(this.pwForm.value.oldPassword!, this.pwForm.value.newPassword!).subscribe(
       {
         next: () => {
-          this.pwSuccess = true
+          this.toastr.success("Password Changed")
         },
         error: (error) => {
-          this.pwError = error?.error?.message || 'request failed'
+          this.toastr.error(error?.error?.message, "Password Change failed", {enableHtml: true})
         }
       }
     )

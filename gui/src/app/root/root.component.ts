@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {MatIcon} from "@angular/material/icon";
-import {MatIconButton} from "@angular/material/button";
+import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 import {MatToolbar} from "@angular/material/toolbar";
 import {Router, RouterLink, RouterOutlet} from "@angular/router";
@@ -8,6 +8,7 @@ import {AuthService, User} from "../common/auth.service";
 import {Observable} from "rxjs";
 import {AsyncPipe, NgIf} from "@angular/common";
 import {MatCard, MatCardContent} from "@angular/material/card";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-root',
@@ -24,14 +25,15 @@ import {MatCard, MatCardContent} from "@angular/material/card";
     NgIf,
     RouterLink,
     MatCard,
-    MatCardContent
+    MatCardContent,
+    MatButton
   ],
   templateUrl: './root.component.html',
   styleUrl: './root.component.scss'
 })
 export class RootComponent implements OnInit {
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private authService: AuthService, private router: Router, private toastr: ToastrService) {
   }
 
   public userInfo$ ?: Observable<User>
@@ -41,6 +43,9 @@ export class RootComponent implements OnInit {
   }
 
   onLogout() {
-    this.authService.fullLogout(() => this.router.navigate(['/login']))
+    this.authService.fullLogout(() => {
+      this.toastr.success("Logout Successful")
+      this.router.navigate(['/login'])
+    })
   }
 }
