@@ -12,18 +12,19 @@ import org.springframework.stereotype.*
 @Service
 @Transactional
 class AccountService(
-    private val securityService: SecurityService,
     private val accountRepository: AccountRepository,
     private val passwordEncoder: PasswordEncoder,
 ) {
-
-    val logger = createLogger()
 
     fun findActiveAccount(username: String): Account = accountRepository.findActiveByUsername(username)
         ?: throw ResourceNotFoundException("/accounts/$username?enabled=true")
 
     fun changePassword(username: String, oldPassword: String, @ValidPassword newPassword: String) {
-        val account = securityService.authenticateCredentials(username, oldPassword)
+        val account = getAccount(username)
+
+        if (!passwordEncoder.matches(oldPassword, account.password)) {
+            throw InvalidPasswordException()
+        }
         account.password = passwordEncoder.encode(newPassword)
     }
 
@@ -44,20 +45,24 @@ class AccountService(
         return accountRepository.save(account)
     }
 
+    @Throws(ResourceNotFoundException::class)
+    fun getAccount(username: String): Account {
+        return accountRepository.findByUsername(username) ?: throw ResourceNotFoundException("/accounts/$username")
+    }
+
     fun editAccount(
         @Length(min = 5) username: String,
         @ValidPassword password: String?,
         admin: Boolean?,
         enabled: Boolean?,
     ): Account {
-        val account = accountRepository.findByUsername(username)
-            ?: throw ResourceNotFoundException("/accounts/$username")
+        val account = getAccount(username)
 
         if (password != null) account.password = passwordEncoder.encode(password)
         if (enabled != null) account.enabled = enabled
         if (admin != null) account.admin = admin
 
-        return accountRepository.save(account)
+        return account
     }
 
 }

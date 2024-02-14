@@ -1,0 +1,35 @@
+.page-body {
+  max-width: 800px;
+  padding: 2em;
+  margin: 0 auto;
+
+  mat-icon {
+    vertical-align: bottom;
+    margin-bottom: -2px;
+  }
+
+  mat-card {
+    margin-top: 1em;
+  }
+
+}
+
+.failureBanner {
+  color: red;
+  font-weight: bold;
+
+  mat-icon {
+    vertical-align: bottom;
+  }
+
+}
+
+.successBanner {
+  color: darkgreen;
+  font-weight: bold;
+
+  mat-icon {
+    vertical-align: bottom;
+  }
+
+}
