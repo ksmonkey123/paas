@@ -10,7 +10,7 @@
     <mat-icon>person</mat-icon>
     Account Settings
   </button>
-  <button mat-menu-item *ngIf="(userInfo$ | async)?.admin">
+  <button mat-menu-item *ngIf="(userInfo$ | async)?.admin" routerLink="/users">
     <mat-icon>manage_accounts</mat-icon>
     Manage Users
   </button>

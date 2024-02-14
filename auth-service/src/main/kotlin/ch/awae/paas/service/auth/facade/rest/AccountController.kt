@@ -27,6 +27,12 @@ class AccountController(
         accountService.changePassword(AuthInfo.username!!, request.oldPassword, request.newPassword)
     }
 
+    @GetMapping("/accounts")
+    @PreAuthorize("hasAuthority('admin')")
+    fun listAllAccounts(): List<Account> {
+        return accountService.getAccounts()
+    }
+
     @PutMapping("/accounts/{username}")
     @PreAuthorize("hasAuthority('admin')")
     @ResponseStatus(HttpStatus.CREATED)
@@ -42,16 +48,16 @@ class AccountController(
 
     data class ChangePasswordRequest(
         val oldPassword: String,
-        @field:ValidPassword val newPassword: String,
+        @field:ValidPasswordFormat val newPassword: String,
     )
 
     data class CreateUserRequest(
-        @field:ValidPassword val password: String,
+        @field:ValidPasswordFormat val password: String,
         val admin: Boolean,
     )
 
     data class PatchAccountRequest(
-        @field:ValidPassword val password: String?,
+        @field:ValidPasswordFormat val password: String?,
         val admin: Boolean?,
         val enabled: Boolean?,
     )

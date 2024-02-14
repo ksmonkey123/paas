@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, signal} from '@angular/core';
 import {map, Observable, of} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 
@@ -23,6 +23,8 @@ export class AuthService {
     pwChange: 'rest/auth/account/password',
   }
 
+  public userInfo ?: User
+
   constructor(private http: HttpClient) {
   }
 
@@ -43,7 +45,9 @@ export class AuthService {
   }
 
   getUserInfo(): Observable<User> {
-    return this.http.get<User>(this.URLS.userInfo)
+    const userInfo$ = this.http.get<User>(this.URLS.userInfo)
+    userInfo$.subscribe(user => this.userInfo = user)
+    return userInfo$
   }
 
   login(username: string, password: string): Observable<boolean> {

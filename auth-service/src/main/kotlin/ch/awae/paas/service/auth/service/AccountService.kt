@@ -19,7 +19,7 @@ class AccountService(
     fun findActiveAccount(username: String): Account = accountRepository.findActiveByUsername(username)
         ?: throw ResourceNotFoundException("/accounts/$username?enabled=true")
 
-    fun changePassword(username: String, oldPassword: String, @ValidPassword newPassword: String) {
+    fun changePassword(username: String, oldPassword: String, @ValidPasswordFormat newPassword: String) {
         val account = getAccount(username)
 
         if (!passwordEncoder.matches(oldPassword, account.password)) {
@@ -30,7 +30,7 @@ class AccountService(
 
     fun createAccount(
         @Length(min = 5) username: String,
-        @ValidPassword password: String, admin: Boolean
+        @ValidPasswordFormat password: String, admin: Boolean
     ): Account {
         if (accountRepository.existsByUsername(username))
             throw ResourceAlreadyExistsException("/accounts/$username")
@@ -50,9 +50,11 @@ class AccountService(
         return accountRepository.findByUsername(username) ?: throw ResourceNotFoundException("/accounts/$username")
     }
 
+    fun getAccounts() = accountRepository.listAll()
+
     fun editAccount(
         @Length(min = 5) username: String,
-        @ValidPassword password: String?,
+        @ValidPasswordFormat password: String?,
         admin: Boolean?,
         enabled: Boolean?,
     ): Account {
