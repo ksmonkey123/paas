@@ -1,0 +1,63 @@
+<div class="page-body">
+  <h1>Manage Users</h1>
+  <mat-card>
+    <mat-card-content>
+      <div class="addUserForm">
+        <div>
+          <form *ngIf="showingForm" [formGroup]="form" (ngSubmit)="createUser()">
+            <div>
+              <mat-form-field>
+                <mat-label>Username</mat-label>
+                <input matInput formControlName="username" required>
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Password</mat-label>
+                <input matInput type="password" formControlName="password" required>
+              </mat-form-field>
+              <button type="submit" color="primary" mat-mini-fab [disabled]="!form.valid">
+                <mat-icon>check</mat-icon>
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="showFormButton">
+          <button type="button" color="primary" mat-mini-fab *ngIf="!showingForm" (click)="showForm()">
+            <mat-icon>add</mat-icon>
+          </button>
+          <button type="button" color="primary" mat-mini-fab *ngIf="showingForm" (click)="hideForm()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <table mat-table [dataSource]="(list$ | async) || []">
+        <!-- Username -->
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef>Username</th>
+          <td mat-cell *matCellDef="let user" (click)="selectUser(user)">
+            @if (user.username == auth.authInfo$.value?.username) {
+              <i>{{ user.username }}</i>
+            } @else {
+              {{ user.username }}
+            }
+            <mat-chip role="listitem" color="warn" highlighted *ngIf="user.admin" class="adminMarker">admin</mat-chip>
+          </td>
+        </ng-container>
+
+        <!-- Enabled? -->
+        <ng-container matColumnDef="enabled">
+          <th mat-header-cell *matHeaderCellDef>Enabled</th>
+          <td mat-cell *matCellDef="let user">
+            <mat-slide-toggle [checked]="user.enabled"
+                              (toggleChange)="enableUser(user.username, !user.enabled)"
+                              [disabled]="user.username === auth.authInfo$.value?.username"></mat-slide-toggle>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

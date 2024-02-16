@@ -1,10 +1,10 @@
-import {Injectable, signal} from '@angular/core';
-import {map, Observable, of} from "rxjs";
+import {Injectable, OnDestroy, OnInit, signal} from '@angular/core';
+import {BehaviorSubject, map, Observable, of, Subject, takeUntil} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 
 export const TOKEN_NAME = "auth_token"
 
-export interface User {
+export interface AuthInfo {
   id: number
   username: string
   admin: boolean
@@ -14,7 +14,7 @@ export interface User {
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService implements OnDestroy {
 
   URLS = {
     login: 'rest/auth/login',
@@ -23,7 +23,8 @@ export class AuthService {
     pwChange: 'rest/auth/account/password',
   }
 
-  public userInfo ?: User
+  public authInfo$ = new BehaviorSubject<AuthInfo | null>(null)
+  private closer$ = new Subject<void>()
 
   constructor(private http: HttpClient) {
   }
@@ -44,19 +45,31 @@ export class AuthService {
     }
   }
 
-  getUserInfo(): Observable<User> {
-    const userInfo$ = this.http.get<User>(this.URLS.userInfo)
-    userInfo$.subscribe(user => this.userInfo = user)
-    return userInfo$
+  public fetch() {
+    console.log("fetching auth data")
+    this.http.get<AuthInfo>(this.URLS.userInfo)
+      .pipe(takeUntil(this.closer$))
+      .subscribe({
+        next: (user) => {
+          this.authInfo$.next(user)
+        }
+      })
+  }
+
+  ngOnDestroy() {
+    this.authInfo$.complete()
+    this.closer$.next()
+    this.closer$.complete()
   }
 
   login(username: string, password: string): Observable<boolean> {
     return this.http.post(this.URLS.login, {username: username, password: password})
       .pipe(
         map((response: any) => {
-          this.setToken(response.token);
-          return true;
-        }));
+          this.setToken(response.token)
+          this.fetch()
+          return true
+        }))
   }
 
   changePassword(oldPassword: string, newPassword: string) {
@@ -67,18 +80,19 @@ export class AuthService {
     this.http.post(this.URLS.logout, null).subscribe(
       {
         next: () => {
-          this.logout();
-          callback();
+          this.logout()
+          callback()
         },
         error: () => {
-          this.logout();
-          callback();
+          this.logout()
+          callback()
         }
-      });
+      })
   }
 
   logout(): void {
-    this.setToken(null);
+    this.setToken(null)
+    this.authInfo$.next(null)
   }
 
 }
