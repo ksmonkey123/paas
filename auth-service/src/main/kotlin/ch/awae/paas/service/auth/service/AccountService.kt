@@ -2,6 +2,7 @@ package ch.awae.paas.service.auth.service
 
 import ch.awae.paas.service.auth.*
 import ch.awae.paas.service.auth.domain.*
+import ch.awae.paas.service.auth.dto.*
 import ch.awae.paas.service.auth.exception.*
 import ch.awae.paas.service.auth.validation.*
 import jakarta.transaction.*
@@ -16,9 +17,6 @@ class AccountService(
     private val passwordEncoder: PasswordEncoder,
 ) {
 
-    fun findActiveAccount(username: String): Account = accountRepository.findActiveByUsername(username)
-        ?: throw ResourceNotFoundException("/accounts/$username?enabled=true")
-
     fun changePassword(username: String, oldPassword: String, @ValidPasswordFormat newPassword: String) {
         val account = getAccount(username)
 
@@ -31,7 +29,7 @@ class AccountService(
     fun createAccount(
         @Length(min = 5) username: String,
         @ValidPasswordFormat password: String, admin: Boolean
-    ): Account {
+    ): AccountSummaryDto {
         if (accountRepository.existsByUsername(username))
             throw ResourceAlreadyExistsException("/accounts/$username")
 
@@ -42,7 +40,7 @@ class AccountService(
             admin
         )
 
-        return accountRepository.save(account)
+        return AccountSummaryDto(accountRepository.save(account))
     }
 
     @Throws(ResourceNotFoundException::class)
@@ -50,21 +48,21 @@ class AccountService(
         return accountRepository.findByUsername(username) ?: throw ResourceNotFoundException("/accounts/$username")
     }
 
-    fun getAccounts() = accountRepository.listAll()
+    fun getAccounts() = accountRepository.listAll().map(::AccountSummaryDto)
 
     fun editAccount(
         @Length(min = 5) username: String,
         @ValidPasswordFormat password: String?,
         admin: Boolean?,
         enabled: Boolean?,
-    ): Account {
+    ): AccountSummaryDto {
         val account = getAccount(username)
 
         if (password != null) account.password = passwordEncoder.encode(password)
         if (enabled != null) account.enabled = enabled
         if (admin != null) account.admin = admin
 
-        return account
+        return AccountSummaryDto(account)
     }
 
 }

@@ -2,6 +2,7 @@ package ch.awae.paas.service.auth.service
 
 import ch.awae.paas.service.auth.*
 import ch.awae.paas.service.auth.domain.*
+import ch.awae.paas.service.auth.dto.*
 import ch.awae.paas.service.auth.exception.*
 import jakarta.transaction.*
 import org.springframework.security.crypto.password.*
@@ -32,12 +33,18 @@ class SecurityService(
         return authTokenRepository.saveAndFlush(AuthToken.buildToken(account))
     }
 
-    fun authenticateToken(tokenString: String): Account? {
-        return accountRepository.findActiveByTokenString(tokenString)
+    fun authenticateToken(tokenString: String): AuthInfoDto? {
+        return accountRepository.findActiveByTokenString(tokenString)?.let(::AuthInfoDto)
     }
 
     fun logout(token: String) {
         authTokenRepository.deleteByTokenString(token)
     }
+
+    fun getAuthInfo(username: String): AuthInfoDto =
+        accountRepository.findActiveByUsername(username)
+            ?.let(::AuthInfoDto)
+            ?: throw ResourceNotFoundException("/accounts/$username?enabled=true")
+
 
 }

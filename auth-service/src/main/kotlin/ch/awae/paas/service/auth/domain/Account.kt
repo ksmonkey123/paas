@@ -13,6 +13,14 @@ class Account(
     var password: String,
     var enabled: Boolean = true,
     var admin: Boolean = false,
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+        name = "account_role",
+        joinColumns = [JoinColumn(name = "account_id")],
+        inverseJoinColumns = [JoinColumn(name = "role_id")]
+    )
+    val roles: MutableSet<Role> = mutableSetOf(),
 ) : IdBaseEntity()
 
 interface AccountRepository : JpaRepository<Account, Long> {

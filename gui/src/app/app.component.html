@@ -14,6 +14,10 @@
     <mat-icon>manage_accounts</mat-icon>
     Manage Users
   </button>
+  <button mat-menu-item *ngIf="(auth.authInfo$ | async)?.admin" routerLink="/roles">
+    <mat-icon>tune</mat-icon>
+    Manage Roles
+  </button>
   <button mat-menu-item (click)="onLogout()">Log Out
     <mat-icon>logout</mat-icon>
   </button>

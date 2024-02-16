@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>{{ config.create ? "Create" : "Edit" }} Role</h2>
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div>
+      <mat-form-field>
+        <mat-label>Role Name</mat-label>
+        <input matInput formControlName="name" required>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="primary" [mat-dialog-close]="collectData()" [disabled]="!form.valid">Ok</button>
+</mat-dialog-actions>

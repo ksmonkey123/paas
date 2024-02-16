@@ -12,7 +12,6 @@ export class UserManagementService implements OnDestroy {
   }
 
   constructor(private http: HttpClient) {
-    console.log("userManagementService hi")
   }
 
   public accountList$ = new BehaviorSubject<Account[]>([])
@@ -22,7 +21,6 @@ export class UserManagementService implements OnDestroy {
     this.closer$.next()
     this.closer$.complete()
     this.accountList$.complete()
-    console.log("userManagementService bye")
   }
 
   loadList() {

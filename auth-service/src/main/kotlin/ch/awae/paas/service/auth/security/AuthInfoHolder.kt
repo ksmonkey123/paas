@@ -3,7 +3,7 @@ package ch.awae.paas.service.auth.security
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.*
 
-object AuthInfo {
+object AuthInfoHolder {
 
     private fun getAuthentication(): Authentication? = SecurityContextHolder.getContext().authentication
 
