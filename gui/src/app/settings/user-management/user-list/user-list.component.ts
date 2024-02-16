@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Account, UserManagementService} from "./user-management.service";
+import {Account, UserManagementService} from "../user-management.service";
 import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
 import {MatCard, MatCardContent} from "@angular/material/card";
 import {
@@ -13,7 +13,7 @@ import {
 } from "@angular/material/table";
 import {MatSlideToggle} from "@angular/material/slide-toggle";
 import {FormBuilder, FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {AuthService} from "../common/auth.service";
+import {AuthService} from "../../../common/auth.service";
 import {MatChip, MatChipOption, MatChipSet} from "@angular/material/chips";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatAnchor, MatButton, MatFabButton, MatIconButton, MatMiniFabButton} from "@angular/material/button";
@@ -59,11 +59,10 @@ import {ToastrService} from "ngx-toastr";
     MatButton,
     MatAnchor
   ],
-  providers: [UserManagementService],
-  templateUrl: './user-management.component.html',
-  styleUrl: './user-management.component.scss'
+  templateUrl: './user-list.component.html',
+  styleUrl: './user-list.component.scss'
 })
-export class UserManagementComponent implements OnInit {
+export class UserListComponent implements OnInit {
 
   displayedColumns = ['username', 'enabled']
   list$

@@ -8,7 +8,7 @@ import {
   ValidationErrors,
   Validators
 } from "@angular/forms";
-import {AuthService} from "../common/auth.service";
+import {AuthService} from "../../common/auth.service";
 import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {MatIcon} from "@angular/material/icon";
