@@ -46,7 +46,6 @@ export class AuthService implements OnDestroy {
   }
 
   public fetch() {
-    console.log("fetching auth data")
     this.http.get<AuthInfo>(this.URLS.userInfo)
       .pipe(takeUntil(this.closer$))
       .subscribe({

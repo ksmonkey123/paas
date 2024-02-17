@@ -7,17 +7,11 @@ import {UserDetailsComponent} from "./settings/user-management/user-details/user
 import {UserManagementService} from "./settings/user-management/user-management.service";
 import {RoleManagementService} from "./settings/role-management/role-management.service";
 import {RoleManagementComponent} from "./settings/role-management/role-management.component";
+import {settings_routes} from "./settings/settings.routes";
 
 export const routes: Routes = [
   {path: '', component: HomeComponent},
-  {path: 'account', component: AccountSettingsComponent},
-  { // user management
-    path: 'users', providers: [UserManagementService], children: [
-      {path: '', component: UserListComponent},
-      {path: ':username', component: UserDetailsComponent},
-    ]
-  },
-  {path: 'roles', component: RoleManagementComponent},
+  ...settings_routes,
   {path: 'login', component: LoginComponent},
   {path: '**', redirectTo: ''},
 ];

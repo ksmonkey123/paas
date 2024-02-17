@@ -14,6 +14,7 @@ import org.springframework.stereotype.*
 @Transactional
 class AccountService(
     private val accountRepository: AccountRepository,
+    private val roleRepository: RoleRepository,
     private val passwordEncoder: PasswordEncoder,
 ) {
 
@@ -63,6 +64,21 @@ class AccountService(
         if (admin != null) account.admin = admin
 
         return AccountSummaryDto(account)
+    }
+
+    fun getAccountDetails(username: String): AccountDetailsDto {
+        return this.accountRepository.findByUsername(username)?.let(::AccountDetailsDto)
+            ?: throw ResourceNotFoundException("/accounts/$username")
+    }
+
+    fun editAccountRoles(username: String, rolesToAdd: List<String>, rolesToRemove: List<String>): AccountDetailsDto {
+        val account = this.accountRepository.findByUsername(username)
+            ?: throw ResourceNotFoundException("/accounts/$username")
+
+        account.roles.removeIf { it.name in rolesToRemove }
+        account.roles.addAll(this.roleRepository.findRolesByName(rolesToAdd))
+
+        return AccountDetailsDto(account)
     }
 
 }

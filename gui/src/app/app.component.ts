@@ -32,7 +32,6 @@ export class AppComponent implements OnInit {
 
   onLogout() {
     this.auth.fullLogout(() => {
-      this.toastr.success("Logout Successful")
       this.router.navigate(['/login'])
     })
   }

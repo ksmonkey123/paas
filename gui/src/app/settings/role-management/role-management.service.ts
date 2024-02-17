@@ -1,20 +1,18 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {BehaviorSubject, Subject, take, takeUntil} from "rxjs";
+import {BehaviorSubject, Subject, takeUntil} from "rxjs";
 import {ToastrService} from "ngx-toastr";
 
 @Injectable()
 export class RoleManagementService implements OnDestroy {
 
   constructor(private http: HttpClient, private toastr: ToastrService) {
-    console.log("hi there")
   }
 
   public roleList$ = new BehaviorSubject<Role[]>([])
   private closer$ = new Subject<void>()
 
   ngOnDestroy() {
-    console.log("goodbye")
     this.closer$.next()
     this.closer$.complete()
     this.roleList$.complete()
@@ -44,7 +42,6 @@ export class RoleManagementService implements OnDestroy {
       .subscribe({
         next: (role) => {
           this.updateList(role)
-          this.toastr.success("role " + role.name + " has been added", "role created")
         },
         error: error => {
           this.toastr.error(error?.error?.message, "could not create role")
@@ -62,7 +59,6 @@ export class RoleManagementService implements OnDestroy {
       .subscribe({
           next: (role) => {
             this.updateList(role)
-            this.toastr.success("role " + role.name + " edited", "role edited")
           },
           error: error => {
             this.toastr.error(error?.error?.message, "could not edit role")
@@ -77,7 +73,6 @@ export class RoleManagementService implements OnDestroy {
       .pipe(takeUntil(this.closer$))
       .subscribe({
         next: _ => {
-          this.toastr.success("role " + name + " deleted", "role deleted")
           this.loadList()
         },
         error: error => {

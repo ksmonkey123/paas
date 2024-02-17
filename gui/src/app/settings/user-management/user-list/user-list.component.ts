@@ -64,7 +64,7 @@ import {ToastrService} from "ngx-toastr";
 })
 export class UserListComponent implements OnInit {
 
-  displayedColumns = ['username', 'enabled']
+  displayedColumns = ['admin', 'username', 'enabled']
   list$
 
   showingForm = false
@@ -94,7 +94,6 @@ export class UserListComponent implements OnInit {
       {
         next: () => {
           this.svc.loadList()
-          this.toastr.success("user " + username + " " + (enabled ? "enabled" : "disabled"))
         }, error: (error) => {
           this.toastr.error(error?.error?.message, "could not edit user")
         }
@@ -103,7 +102,6 @@ export class UserListComponent implements OnInit {
   }
 
   selectUser(user: Account) {
-    console.log(user)
     this.router.navigate([user.username], {relativeTo: this.route})
   }
 
@@ -122,7 +120,6 @@ export class UserListComponent implements OnInit {
           this.form.reset()
           this.showingForm = false
           this.svc.loadList()
-          this.toastr.success("user created")
         },
         error: (error) => {
           this.toastr.error(error?.error?.message, "could not create user")

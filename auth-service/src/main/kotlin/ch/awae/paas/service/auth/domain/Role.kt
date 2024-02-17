@@ -2,6 +2,7 @@ package ch.awae.paas.service.auth.domain
 
 import jakarta.persistence.*
 import org.springframework.data.jpa.repository.*
+import org.springframework.data.jpa.repository.Query
 
 @Entity
 class Role(
@@ -23,5 +24,8 @@ interface RoleRepository : JpaRepository<Role, Long> {
 
     fun findByName(name: String): Role?
     fun deleteByName(role: String)
+
+    @Query("select r from Role r where r.name in :names")
+    fun findRolesByName(names : List<String>) : List<Role>
 
 }

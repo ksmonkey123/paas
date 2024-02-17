@@ -6,8 +6,13 @@ import {MatCard, MatCardContent} from "@angular/material/card";
 import {
   MatCell,
   MatCellDef,
-  MatColumnDef, MatFooterCell, MatFooterCellDef, MatFooterRow, MatFooterRowDef,
-  MatHeaderCell, MatHeaderCellDef,
+  MatColumnDef,
+  MatFooterCell,
+  MatFooterCellDef,
+  MatFooterRow,
+  MatFooterRowDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
   MatHeaderRow,
   MatHeaderRowDef,
   MatRow,
@@ -20,9 +25,8 @@ import {MatIcon} from "@angular/material/icon";
 import {MatInput} from "@angular/material/input";
 import {MatIconButton, MatMiniFabButton} from "@angular/material/button";
 import {MatSlideToggle} from "@angular/material/slide-toggle";
-import {BehaviorSubject} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
-import {DialogConfig, DialogResult, RoleEditPopupDialog} from "./role-edit-popup/role-edit-popup.dialog";
+import {DialogResult, RoleEditPopupDialog} from "./role-edit-popup/role-edit-popup.dialog";
 import {MatBadge} from "@angular/material/badge";
 import {SimpleModalService} from "../../common/simple-modal/simple-modal.service";
 
@@ -66,7 +70,7 @@ import {SimpleModalService} from "../../common/simple-modal/simple-modal.service
 })
 export class RoleManagementComponent {
 
-  displayedColumns = ['name', 'description', 'enabled', 'edit', 'delete']
+  displayedColumns = ['name', 'description', 'enabled', 'delete']
 
   public list$
 

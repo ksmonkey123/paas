@@ -1,12 +1,8 @@
 <div class="page-body">
   <h1>Manage Account</h1>
-  <button mat-flat-button color="primary" type="button" routerLink="/">
-    <mat-icon>close</mat-icon>
-    Close
-  </button>
   <mat-card>
     <mat-card-header>
-      <h1>Change Password</h1>
+      <h2>Change Password</h2>
     </mat-card-header>
     <mat-card-content>
       <form [formGroup]="pwForm" (ngSubmit)="onChangePassword()">

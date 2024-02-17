@@ -1,6 +1,7 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {BehaviorSubject, Observable, Subject, takeUntil} from "rxjs";
+import {BehaviorSubject, Observable, Subject, take, takeUntil} from "rxjs";
+import {ToastrService} from "ngx-toastr";
 
 @Injectable()
 export class UserManagementService implements OnDestroy {
@@ -11,15 +12,19 @@ export class UserManagementService implements OnDestroy {
     edit: 'rest/auth/accounts/',
   }
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private toastr: ToastrService) {
   }
 
   public accountList$ = new BehaviorSubject<Account[]>([])
+  public userDetails$ = new BehaviorSubject<AccountDetails | undefined>(undefined)
+
+
   private closer$ = new Subject<void>()
 
   ngOnDestroy() {
     this.closer$.next()
     this.closer$.complete()
+    this.userDetails$.complete()
     this.accountList$.complete()
   }
 
@@ -36,10 +41,49 @@ export class UserManagementService implements OnDestroy {
     })
   }
 
+  loadUser(username: string) {
+    this.http.get<AccountDetails>('/rest/auth/accounts/' + username)
+      .pipe(takeUntil(this.closer$))
+      .subscribe((account) => this.userDetails$.next(account))
+  }
+
   setUserEnabled(username: string, enabled: boolean) {
     return this.http.patch(this.URLS.edit + username, {
       enabled: enabled
     })
+  }
+
+  setBasicsForUser(username: string, enabled?: boolean, admin?: boolean) {
+    this.http.patch<Account>('/rest/auth/accounts/' + username, {
+      enabled: enabled,
+      admin: admin
+    })
+      .pipe(takeUntil(this.closer$))
+      .subscribe({
+          next: _ => this.loadUser(username),
+          error: error => {
+            this.toastr.error(error?.error?.message, "could not update user")
+            this.loadUser(username)
+          }
+        }
+      )
+  }
+
+  setRoleStateForUser(username: string, role: string, newState: boolean) {
+    this.http.patch<AccountDetails>('/rest/auth/accounts/' + username + '/roles', {
+      add: newState ? [role] : null,
+      remove: newState ? null : [role]
+    })
+      .pipe(takeUntil(this.closer$))
+      .subscribe({
+        next: (acc) => {
+          this.userDetails$.next(acc)
+        },
+        error: (error) => {
+          this.toastr.error(error?.error?.message, "could not create user")
+          this.loadUser(username)
+        }
+      })
   }
 }
 
@@ -47,4 +91,11 @@ export interface Account {
   username: string
   admin: boolean
   enabled: boolean
+}
+
+export interface AccountDetails {
+  username: string
+  admin: boolean
+  enabled: boolean
+  roles: string[]
 }

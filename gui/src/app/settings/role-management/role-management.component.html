@@ -11,21 +11,13 @@
         <!-- Name -->
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>Name</th>
-          <td mat-cell *matCellDef="let role">{{ role.name }}</td>
-        </ng-container>
-
-        <!-- AccountCount -->
-        <ng-container matColumnDef="count">
-          <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
-          <td mat-cell *matCellDef="let role">
-            <mat-icon [matBadge]="role.accountCount">person</mat-icon>
-          </td>
+          <td mat-cell *matCellDef="let role" (click)="openEditDialog(role)">{{ role.name }}</td>
         </ng-container>
 
         <!-- Description -->
         <ng-container matColumnDef="description">
           <th mat-header-cell *matHeaderCellDef>Description</th>
-          <td mat-cell *matCellDef="let role">{{ role.description }}</td>
+          <td mat-cell *matCellDef="let role" (click)="openEditDialog(role)">{{ role.description }}</td>
         </ng-container>
 
         <!-- Enabled? -->
@@ -37,15 +29,6 @@
           </td>
         </ng-container>
 
-        <!-- Edit? -->
-        <ng-container matColumnDef="edit">
-          <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
-          <td mat-cell *matCellDef="let role">
-            <button mat-mini-fab color="primary" (click)="openEditDialog(role)">
-              <mat-icon>edit</mat-icon>
-            </button>
-          </td>
-        </ng-container>
         <!-- Delete? -->
         <ng-container matColumnDef="delete">
           <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
