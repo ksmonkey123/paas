@@ -8,8 +8,8 @@
     margin-bottom: -2px;
   }
 
-  mat-card {
-    margin-top: 1em;
+  >button {
+    margin-bottom: 2em;
   }
 
 }
@@ -17,4 +17,10 @@
 mat-slide-toggle {
   margin: 8px 0;
   display: block;
+}
+
+mat-panel-title {
+  mat-icon {
+    margin-right: 1em;
+  }
 }

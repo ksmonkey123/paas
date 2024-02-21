@@ -85,6 +85,21 @@ export class UserManagementService implements OnDestroy {
         }
       })
   }
+
+  resetPassword(username: string, password: string) {
+    this.http.patch<Account>('/rest/auth/accounts/' + username, {password: password})
+      .pipe(takeUntil(this.closer$))
+      .subscribe({
+          next: _ => {
+            this.toastr.success("password updated")
+          },
+          error: error => {
+            this.toastr.error(error?.error?.message, "could not update password")
+          }
+        }
+      )
+  }
+
 }
 
 export interface Account {

@@ -31,7 +31,10 @@ class UserManagementController(
     }
 
     @PatchMapping("/{username}")
-    fun editAccount(@PathVariable username: String, @RequestBody request: PatchAccountRequest): AccountSummaryDto {
+    fun editAccount(
+        @PathVariable username: String,
+        @Valid @RequestBody request: PatchAccountRequest
+    ): AccountSummaryDto {
         return accountService.editAccount(username, request.password, request.admin, request.enabled)
     }
 

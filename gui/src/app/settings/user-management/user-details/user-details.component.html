@@ -4,9 +4,14 @@
     <mat-icon>arrow_back</mat-icon>
     Back
   </button>
-  <mat-card>
-    <mat-card-content>
-      <h2>Basic Permissions</h2>
+  <mat-accordion multi="true">
+    <mat-expansion-panel expanded="true" *ngIf="(authInfo$ | async)?.username !== name">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>settings</mat-icon>
+          Basic Permissions
+        </mat-panel-title>
+      </mat-expansion-panel-header>
       <mat-slide-toggle [disabled]="(authInfo$ | async)?.username === name"
                         [ngModel]="(userDetails$ | async)?.enabled"
                         (toggleChange)="toggleEnabled()">
@@ -17,7 +22,14 @@
                         (toggleChange)="toggleAdmin()">
         Admin
       </mat-slide-toggle>
-      <h2>Roles</h2>
+    </mat-expansion-panel>
+    <mat-expansion-panel expanded="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>tune</mat-icon>
+          Roles
+        </mat-panel-title>
+      </mat-expansion-panel-header>
       <mat-slide-toggle *ngFor="let role of (roleList$ | async)"
                         [checked]="(userDetails$ | async)?.roles?.includes(role.name)"
                         (toggleChange)="toggleRole(role.name)">
@@ -27,6 +39,26 @@
           <i>{{ role.name }}</i>
         }
       </mat-slide-toggle>
-    </mat-card-content>
-  </mat-card>
+    </mat-expansion-panel>
+    <mat-expansion-panel expanded="false" *ngIf="(authInfo$ | async)?.username !== name">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>lock_reset</mat-icon>
+          Reset Password
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <form [formGroup]="pwForm" (ngSubmit)="resetPassword()">
+        <mat-form-field>
+          <mat-label>New Password</mat-label>
+          <input matInput type="password" formControlName="password" required>
+        </mat-form-field>
+        <br/>
+        <button mat-raised-button type="submit" color="primary" [disabled]="!pwForm.valid">
+          <mat-icon>check</mat-icon>
+          Change Password
+        </button>
+      </form>
+    </mat-expansion-panel>
+  </mat-accordion>
+
 </div>
