@@ -2,6 +2,7 @@ package ch.awae.paas.service.auth.service
 
 import ch.awae.paas.service.auth.*
 import ch.awae.paas.service.auth.domain.*
+import ch.awae.paas.service.auth.dto.*
 import ch.awae.paas.service.auth.exception.*
 import ch.awae.paas.service.auth.validation.*
 import jakarta.transaction.*
@@ -12,25 +13,24 @@ import org.springframework.stereotype.*
 @Service
 @Transactional
 class AccountService(
-    private val securityService: SecurityService,
     private val accountRepository: AccountRepository,
+    private val roleRepository: RoleRepository,
     private val passwordEncoder: PasswordEncoder,
 ) {
 
-    val logger = createLogger()
+    fun changePassword(username: String, oldPassword: String, @ValidPasswordFormat newPassword: String) {
+        val account = getAccount(username)
 
-    fun findActiveAccount(username: String): Account = accountRepository.findActiveByUsername(username)
-        ?: throw ResourceNotFoundException("/accounts/$username?enabled=true")
-
-    fun changePassword(username: String, oldPassword: String, @ValidPassword newPassword: String) {
-        val account = securityService.authenticateCredentials(username, oldPassword)
+        if (!passwordEncoder.matches(oldPassword, account.password)) {
+            throw InvalidPasswordException()
+        }
         account.password = passwordEncoder.encode(newPassword)
     }
 
     fun createAccount(
         @Length(min = 5) username: String,
-        @ValidPassword password: String, admin: Boolean
-    ): Account {
+        @ValidPasswordFormat password: String, admin: Boolean
+    ): AccountSummaryDto {
         if (accountRepository.existsByUsername(username))
             throw ResourceAlreadyExistsException("/accounts/$username")
 
@@ -41,23 +41,44 @@ class AccountService(
             admin
         )
 
-        return accountRepository.save(account)
+        return AccountSummaryDto(accountRepository.save(account))
     }
+
+    @Throws(ResourceNotFoundException::class)
+    fun getAccount(username: String): Account {
+        return accountRepository.findByUsername(username) ?: throw ResourceNotFoundException("/accounts/$username")
+    }
+
+    fun getAccounts() = accountRepository.listAll().map(::AccountSummaryDto)
 
     fun editAccount(
         @Length(min = 5) username: String,
-        @ValidPassword password: String?,
+        @ValidPasswordFormat password: String?,
         admin: Boolean?,
         enabled: Boolean?,
-    ): Account {
-        val account = accountRepository.findByUsername(username)
-            ?: throw ResourceNotFoundException("/accounts/$username")
+    ): AccountSummaryDto {
+        val account = getAccount(username)
 
         if (password != null) account.password = passwordEncoder.encode(password)
         if (enabled != null) account.enabled = enabled
         if (admin != null) account.admin = admin
 
-        return accountRepository.save(account)
+        return AccountSummaryDto(account)
+    }
+
+    fun getAccountDetails(username: String): AccountDetailsDto {
+        return this.accountRepository.findByUsername(username)?.let(::AccountDetailsDto)
+            ?: throw ResourceNotFoundException("/accounts/$username")
+    }
+
+    fun editAccountRoles(username: String, rolesToAdd: List<String>, rolesToRemove: List<String>): AccountDetailsDto {
+        val account = this.accountRepository.findByUsername(username)
+            ?: throw ResourceNotFoundException("/accounts/$username")
+
+        account.roles.removeIf { it.name in rolesToRemove }
+        account.roles.addAll(this.roleRepository.findRolesByName(rolesToAdd))
+
+        return AccountDetailsDto(account)
     }
 
 }

@@ -13,6 +13,14 @@ class Account(
     var password: String,
     var enabled: Boolean = true,
     var admin: Boolean = false,
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+        name = "account_role",
+        joinColumns = [JoinColumn(name = "account_id")],
+        inverseJoinColumns = [JoinColumn(name = "role_id")]
+    )
+    val roles: MutableSet<Role> = mutableSetOf(),
 ) : IdBaseEntity()
 
 interface AccountRepository : JpaRepository<Account, Long> {
@@ -25,6 +33,9 @@ interface AccountRepository : JpaRepository<Account, Long> {
 
     @Query("select t.account from AuthToken t where t.tokenString = :tokenString and t.account.enabled")
     fun findActiveByTokenString(tokenString: String): Account?
+
+    @Query("select a from Account a order by a.username asc")
+    fun listAll(): List<Account>
 
     fun findByUsername(username: String): Account?
 
