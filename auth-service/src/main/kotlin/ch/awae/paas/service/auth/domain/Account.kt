@@ -1,5 +1,6 @@
 package ch.awae.paas.service.auth.domain
 
+import ch.awae.paas.db.*
 import com.fasterxml.jackson.annotation.*
 import jakarta.persistence.*
 import org.springframework.data.jpa.repository.*

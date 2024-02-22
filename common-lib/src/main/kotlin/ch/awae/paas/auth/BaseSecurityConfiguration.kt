@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.*
 @EnableMethodSecurity
 @ComponentScan(basePackages = ["ch.awae.paas.auth", "ch.awae.paas.rest"])
 @ConfigurationPropertiesScan(basePackages = ["ch.awae.paas.auth"])
-class ServiceSecurityConfig {
+class BaseSecurityConfiguration {
 
     @Bean
     fun authManager(): AuthenticationManager = AuthenticationManager { it }

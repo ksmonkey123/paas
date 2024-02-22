@@ -1,6 +1,6 @@
 package ch.awae.paas.service.auth.config
 
-import ch.awae.paas.service.auth.*
+import ch.awae.paas.*
 import ch.awae.paas.service.auth.domain.*
 import jakarta.transaction.Transactional
 import org.springframework.boot.CommandLineRunner

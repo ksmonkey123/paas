@@ -1,6 +1,6 @@
 package ch.awae.paas.service.auth.facade.rest
 
-import ch.awae.paas.service.auth.*
+import ch.awae.paas.*
 import ch.awae.paas.service.auth.dto.*
 import ch.awae.paas.service.auth.security.*
 import ch.awae.paas.service.auth.service.*

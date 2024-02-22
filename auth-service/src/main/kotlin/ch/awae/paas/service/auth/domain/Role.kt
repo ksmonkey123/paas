@@ -1,5 +1,6 @@
 package ch.awae.paas.service.auth.domain
 
+import ch.awae.paas.db.*
 import jakarta.persistence.*
 import org.springframework.data.jpa.repository.*
 import org.springframework.data.jpa.repository.Query
