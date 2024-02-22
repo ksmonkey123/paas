@@ -15,7 +15,7 @@ class AuthServiceClient(
     private val http: RestTemplate,
 ) {
 
-    val cache: LoadingCache<String, AuthInfo> = Caffeine.newBuilder()
+    private val cache: LoadingCache<String, AuthInfo> = Caffeine.newBuilder()
         .maximumSize(100)
         .expireAfterWrite(30.seconds.toJavaDuration())
         .build { token -> fetchToken(token) }

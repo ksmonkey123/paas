@@ -12,7 +12,7 @@ class RestClientConfiguration {
 
     @External
     @Bean
-    fun restTemplate() = RestTemplate()
+    fun externalRestTemplate() = RestTemplate()
 
     @LoadBalanced
     @Internal
