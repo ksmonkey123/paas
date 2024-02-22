@@ -3,7 +3,7 @@ package ch.awae.paas.auth
 import org.springframework.security.core.*
 import org.springframework.security.core.context.*
 
-data class AuthInfo internal constructor(
+data class AuthInfo (
     val username: String,
     val admin: Boolean,
     val roles: List<String>,

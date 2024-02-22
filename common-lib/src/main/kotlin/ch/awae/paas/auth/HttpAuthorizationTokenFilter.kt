@@ -10,7 +10,7 @@ import org.springframework.stereotype.*
 import org.springframework.web.filter.*
 
 @Component
-class HttpAuthorizationTokenFilter(val authServiceClient: AuthServiceClient) : OncePerRequestFilter() {
+class HttpAuthorizationTokenFilter(val authServiceClient: AuthService) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
         request: HttpServletRequest,

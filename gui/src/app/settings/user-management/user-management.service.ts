@@ -1,16 +1,10 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {BehaviorSubject, Observable, Subject, take, takeUntil} from "rxjs";
+import {BehaviorSubject, Subject, takeUntil} from "rxjs";
 import {ToastrService} from "ngx-toastr";
 
 @Injectable()
 export class UserManagementService implements OnDestroy {
-
-  URLS = {
-    list: 'rest/auth/accounts',
-    create: 'rest/auth/accounts/',
-    edit: 'rest/auth/accounts/',
-  }
 
   constructor(private http: HttpClient, private toastr: ToastrService) {
   }
@@ -29,13 +23,13 @@ export class UserManagementService implements OnDestroy {
   }
 
   loadList() {
-    this.http.get<Account[]>(this.URLS.list)
+    this.http.get<Account[]>('rest/auth/accounts')
       .pipe(takeUntil(this.closer$))
       .subscribe((x) => this.accountList$.next(x))
   }
 
   createUser(username: string, password: string) {
-    return this.http.put(this.URLS.create + username, {
+    return this.http.put('rest/auth/accounts/' + username, {
       username: username,
       password: password
     })
@@ -48,7 +42,7 @@ export class UserManagementService implements OnDestroy {
   }
 
   setUserEnabled(username: string, enabled: boolean) {
-    return this.http.patch(this.URLS.edit + username, {
+    return this.http.patch('rest/auth/accounts/' + username, {
       enabled: enabled
     })
   }

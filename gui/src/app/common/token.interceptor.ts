@@ -19,7 +19,7 @@ export class TokenInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (request.url !== this.auth.URLS.login) {
+    if (request.url !== 'rest/auth/login') {
       // auth/login is unauthenticated, everything else uses access token
       request = request.clone({
         setHeaders: {

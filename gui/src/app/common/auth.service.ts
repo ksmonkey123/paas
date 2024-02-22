@@ -1,5 +1,5 @@
-import {Injectable, OnDestroy, OnInit, signal} from '@angular/core';
-import {BehaviorSubject, map, Observable, of, Subject, takeUntil} from "rxjs";
+import {Injectable, OnDestroy} from '@angular/core';
+import {BehaviorSubject, map, Observable, Subject, takeUntil} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 
 export const TOKEN_NAME = "auth_token"
@@ -15,13 +15,6 @@ export interface AuthInfo {
   providedIn: 'root'
 })
 export class AuthService implements OnDestroy {
-
-  URLS = {
-    login: 'rest/auth/login',
-    logout: 'rest/auth/logout',
-    userInfo: 'rest/auth/account',
-    pwChange: 'rest/auth/account/password',
-  }
 
   public authInfo$ = new BehaviorSubject<AuthInfo | null>(null)
   private closer$ = new Subject<void>()
@@ -46,7 +39,7 @@ export class AuthService implements OnDestroy {
   }
 
   public fetch() {
-    this.http.get<AuthInfo>(this.URLS.userInfo)
+    this.http.get<AuthInfo>('rest/auth/authenticate')
       .pipe(takeUntil(this.closer$))
       .subscribe({
         next: (user) => {
@@ -62,7 +55,10 @@ export class AuthService implements OnDestroy {
   }
 
   login(username: string, password: string): Observable<boolean> {
-    return this.http.post(this.URLS.login, {username: username, password: password})
+    return this.http.post('rest/auth/login', {
+      username: username,
+      password: password
+    })
       .pipe(
         map((response: any) => {
           this.setToken(response.token)
@@ -72,11 +68,14 @@ export class AuthService implements OnDestroy {
   }
 
   changePassword(oldPassword: string, newPassword: string) {
-    return this.http.patch<void>(this.URLS.pwChange, {oldPassword: oldPassword, newPassword: newPassword})
+    return this.http.patch<void>('rest/auth/account/password', {
+      oldPassword: oldPassword,
+      newPassword: newPassword
+    })
   }
 
   fullLogout(callback: () => void) {
-    this.http.post(this.URLS.logout, null).subscribe(
+    this.http.post('rest/auth/logout', null).subscribe(
       {
         next: () => {
           this.logout()

@@ -1,6 +1,6 @@
-package ch.awae.paas.service.auth.domain
+package ch.awae.paas.db
 
-import ch.awae.paas.service.auth.*
+import ch.awae.paas.*
 import jakarta.persistence.*
 
 @MappedSuperclass

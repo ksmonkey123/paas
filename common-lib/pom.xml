@@ -9,7 +9,7 @@
         <relativePath>../base-pom</relativePath>
     </parent>
 
-    <artifactId>auth-lib</artifactId>
+    <artifactId>common-lib</artifactId>
     <version>1.0.x-SNAPSHOT</version>
 
     <dependencies>
@@ -20,6 +20,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
