@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    hikari:
+      schema: ${DB_SCHEMA}
+  jpa:
+    show-sql: true
+    open-in-view: false
+  flyway:
+    default-schema: ${DB_SCHEMA}
+server:
+  error:
+    include-message: always

@@ -6,3 +6,5 @@ spring:
           instances:
             auth-service:
               - uri: http://localhost:8001/
+            shortener-service:
+              - uri: http://localhost:8002/

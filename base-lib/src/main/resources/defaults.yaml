@@ -6,3 +6,5 @@ spring:
           instances:
             auth-service:
               - uri: http://auth-service/
+            shortener-service:
+              - uri: http://shortener-service/

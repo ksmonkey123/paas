@@ -17,6 +17,7 @@
         <module>gateway-service</module>
         <!-- business services -->
         <module>auth-service</module>
+        <module>shortener-service</module>
     </modules>
 
 </project>

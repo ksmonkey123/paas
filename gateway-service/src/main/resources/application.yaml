@@ -13,3 +13,7 @@ spring:
           predicates:
             - Path=/rest/auth/**
           uri: lb://auth-service
+        - id: shortener-service
+          predicates:
+            - Path=/rest/shortener/**
+          uri: lb://shortener-service
