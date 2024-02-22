@@ -11,7 +11,7 @@
         <!-- base libs -->
         <module>base-lib</module>
         <module>base-pom</module>
-        <module>auth-lib</module>
+        <module>common-lib</module>
         <!-- frontend -->
         <module>gui</module>
         <module>gateway-service</module>
