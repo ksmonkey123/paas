@@ -5,7 +5,7 @@ import org.springframework.context.annotation.*
 import org.springframework.web.client.*
 
 @Configuration
-@Import(BaseSecurityConfiguration::class)
+@Import(ServiceSecurityConfiguration::class)
 class ClientSecurityConfiguration {
 
     @Bean

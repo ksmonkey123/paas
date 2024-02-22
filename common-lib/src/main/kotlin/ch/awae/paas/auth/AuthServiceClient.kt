@@ -11,10 +11,6 @@ class AuthServiceClient(
     private val http: RestTemplate,
 ) : AuthService {
 
-    init {
-        println("auth service client")
-    }
-
     private val cache: LoadingCache<String, AuthInfo> = Caffeine.newBuilder()
         .maximumSize(100)
         .expireAfterWrite(30.seconds.toJavaDuration())
@@ -24,12 +20,12 @@ class AuthServiceClient(
         return cache.get(tokenString)
     }
 
-    fun fetchToken(tokenString: String): AuthInfo? {
+    private fun fetchToken(tokenString: String): AuthInfo? {
         val headers = HttpHeaders()
         headers.setBearerAuth(tokenString)
         val entity = HttpEntity(null, headers)
         return try {
-            http.exchange<AuthInfoDto>("http://auth-service/account", HttpMethod.GET, entity).body?.let {
+            http.exchange<AuthInfoDto>("http://auth-service/authenticate", HttpMethod.GET, entity).body?.let {
                 AuthInfo(it.username, it.admin, it.roles, tokenString)
             }
         } catch (e: Unauthorized) {

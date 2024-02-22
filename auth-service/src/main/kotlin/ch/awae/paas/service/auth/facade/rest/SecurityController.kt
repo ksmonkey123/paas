@@ -1,8 +1,7 @@
 package ch.awae.paas.service.auth.facade.rest
 
 import ch.awae.paas.*
-import ch.awae.paas.service.auth.dto.*
-import ch.awae.paas.service.auth.security.*
+import ch.awae.paas.auth.*
 import ch.awae.paas.service.auth.service.*
 import org.springframework.http.*
 import org.springframework.security.access.prepost.*
@@ -28,15 +27,13 @@ class SecurityController(private val securityService: SecurityService) {
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun logout() {
-        logger.info("handling logout request for ${AuthInfoHolder.username}")
-        securityService.logout(AuthInfoHolder.token!!)
+        logger.info("handling logout request for ${AuthInfo.username}")
+        securityService.logout(AuthInfo.info!!.token)
     }
 
-    @GetMapping("/account")
+    @GetMapping("/authenticate")
     @PreAuthorize("hasAuthority('user')")
-    fun getOwnAccountInfo(): AuthInfoDto {
-        return securityService.getAuthInfo(AuthInfoHolder.username!!)
-    }
+    fun getOwnAccountInfo(): AuthInfo = AuthInfo.info!!
 
     data class LoginRequest(val username: String, val password: String)
     data class LoginResponse(val token: String)

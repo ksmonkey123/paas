@@ -1,6 +1,6 @@
 package ch.awae.paas.service.auth.facade.rest
 
-import ch.awae.paas.service.auth.security.*
+import ch.awae.paas.auth.*
 import ch.awae.paas.service.auth.service.*
 import ch.awae.paas.service.auth.validation.*
 import jakarta.validation.*
@@ -18,7 +18,7 @@ class AccountSettingsController(
     @PatchMapping("/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun changeOwnPassword(@Valid @RequestBody request: ChangePasswordRequest) {
-        accountService.changePassword(AuthInfoHolder.username!!, request.oldPassword, request.newPassword)
+        accountService.changePassword(AuthInfo.username!!, request.oldPassword, request.newPassword)
     }
 
     data class ChangePasswordRequest(

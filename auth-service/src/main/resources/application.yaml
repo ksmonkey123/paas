@@ -13,3 +13,8 @@ spring:
 server:
   error:
     include-message: always
+
+paas:
+  security:
+    public-endpoints:
+      - /login

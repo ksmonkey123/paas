@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class InitialUserCreator(
-    val accountRepository: AccountRepository,
-    val passwordEncoder: PasswordEncoder,
+    private val accountRepository: AccountRepository,
+    private val passwordEncoder: PasswordEncoder,
 ) : CommandLineRunner {
 
     private val logger = createLogger()

@@ -1,5 +1,6 @@
 package ch.awae.paas.auth
 
+import ch.awae.paas.rest.*
 import org.springframework.boot.context.properties.*
 import org.springframework.context.annotation.*
 import org.springframework.security.authentication.*
@@ -13,9 +14,9 @@ import org.springframework.security.web.authentication.*
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@ComponentScan(basePackages = ["ch.awae.paas.auth", "ch.awae.paas.rest"])
+@Import(HttpAuthorizationTokenFilter::class, HttpAuthorizationTokenEntryPoint::class, RestClientConfiguration::class)
 @ConfigurationPropertiesScan(basePackages = ["ch.awae.paas.auth"])
-class BaseSecurityConfiguration {
+class ServiceSecurityConfiguration {
 
     @Bean
     fun authManager(): AuthenticationManager = AuthenticationManager { it }
@@ -33,9 +34,10 @@ class BaseSecurityConfiguration {
             .authorizeHttpRequests {
                 val whitelist = securityProperties.publicEndpoints
                 if (whitelist.isNullOrEmpty()) {
-                    it.anyRequest().authenticated()
+                    it.requestMatchers("/error").permitAll()
+                        .anyRequest().authenticated()
                 } else {
-                    it.requestMatchers(*whitelist.toTypedArray()).permitAll()
+                    it.requestMatchers("/error", *whitelist.toTypedArray()).permitAll()
                         .anyRequest().authenticated()
                 }
             }
