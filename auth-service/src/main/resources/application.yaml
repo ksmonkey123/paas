@@ -10,6 +10,8 @@ spring:
     open-in-view: false
   flyway:
     default-schema: ${DB_SCHEMA}
+  application:
+    name: auth-service
 server:
   error:
     include-message: always

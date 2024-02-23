@@ -10,6 +10,8 @@ spring:
     open-in-view: false
   flyway:
     default-schema: ${DB_SCHEMA}
+  application:
+    name: shortener
 server:
   error:
     include-message: always

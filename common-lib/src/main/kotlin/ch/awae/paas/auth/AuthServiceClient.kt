@@ -20,7 +20,7 @@ class AuthServiceClient(
         return cache.get(tokenString)
     }
 
-    private fun fetchToken(tokenString: String): AuthInfo? {
+    fun fetchToken(tokenString: String): AuthInfo? {
         val headers = HttpHeaders()
         headers.setBearerAuth(tokenString)
         val entity = HttpEntity(null, headers)

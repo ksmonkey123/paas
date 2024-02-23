@@ -1,11 +1,11 @@
 package ch.awae.paas.service.auth.service
 
-import ch.awae.paas.service.auth.*
+import ch.awae.paas.audit.*
 import ch.awae.paas.service.auth.domain.*
 import ch.awae.paas.service.auth.dto.*
 import ch.awae.paas.service.auth.exception.*
-import jakarta.transaction.Transactional
-import org.springframework.stereotype.Service
+import jakarta.transaction.*
+import org.springframework.stereotype.*
 
 @Transactional
 @Service
@@ -14,6 +14,7 @@ class RoleService(private val roleRepository: RoleRepository) {
         return roleRepository.findAll().map(::RoleDto)
     }
 
+    @AuditLog
     fun createRole(name: String, description: String?): RoleDto {
         if (roleRepository.findByName(name) != null) {
             throw ResourceAlreadyExistsException("/roles/$name")
@@ -22,6 +23,7 @@ class RoleService(private val roleRepository: RoleRepository) {
         return RoleDto(roleRepository.save(Role(name, true, description?.takeIf { it.isNotEmpty() })))
     }
 
+    @AuditLog
     fun editRole(
         name: String,
         description: String?,
@@ -37,6 +39,7 @@ class RoleService(private val roleRepository: RoleRepository) {
         return RoleDto(role)
     }
 
+    @AuditLog
     fun deleteRole(role: String) {
         this.roleRepository.deleteByName(role)
     }

@@ -8,3 +8,11 @@ spring:
               - uri: http://auth-service/
             shortener-service:
               - uri: http://shortener-service/
+
+paas:
+  kafka:
+    url: ${KAFKA_BOOTSTRAP_SERVERS}
+
+  audit:
+    kafka:
+      topic: paas-audit-log

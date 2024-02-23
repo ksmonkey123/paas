@@ -2,7 +2,7 @@ package ch.awae.paas.service.auth.service
 
 import ch.awae.paas.auth.*
 import ch.awae.paas.service.auth.domain.*
-import jakarta.transaction.Transactional
+import jakarta.transaction.*
 import org.springframework.stereotype.*
 
 @Service

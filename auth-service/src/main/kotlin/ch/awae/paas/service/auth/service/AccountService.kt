@@ -1,5 +1,6 @@
 package ch.awae.paas.service.auth.service
 
+import ch.awae.paas.audit.*
 import ch.awae.paas.service.auth.*
 import ch.awae.paas.service.auth.domain.*
 import ch.awae.paas.service.auth.dto.*
@@ -18,7 +19,12 @@ class AccountService(
     private val passwordEncoder: PasswordEncoder,
 ) {
 
-    fun changePassword(username: String, oldPassword: String, @ValidPasswordFormat newPassword: String) {
+    @AuditLog
+    fun changePassword(
+        username: String,
+        @NoAudit oldPassword: String,
+        @NoAudit @ValidPasswordFormat newPassword: String
+    ) {
         val account = getAccount(username)
 
         if (!passwordEncoder.matches(oldPassword, account.password)) {
@@ -27,9 +33,11 @@ class AccountService(
         account.password = passwordEncoder.encode(newPassword)
     }
 
+    @AuditLog
     fun createAccount(
         @Length(min = 5) username: String,
-        @ValidPasswordFormat password: String, admin: Boolean
+        @NoAudit @ValidPasswordFormat password: String,
+        admin: Boolean
     ): AccountSummaryDto {
         if (accountRepository.existsByUsername(username))
             throw ResourceAlreadyExistsException("/accounts/$username")
@@ -51,9 +59,10 @@ class AccountService(
 
     fun getAccounts() = accountRepository.listAll().map(::AccountSummaryDto)
 
+    @AuditLog
     fun editAccount(
         @Length(min = 5) username: String,
-        @ValidPasswordFormat password: String?,
+        @NoAudit @ValidPasswordFormat password: String?,
         admin: Boolean?,
         enabled: Boolean?,
     ): AccountSummaryDto {
@@ -71,6 +80,7 @@ class AccountService(
             ?: throw ResourceNotFoundException("/accounts/$username")
     }
 
+    @AuditLog
     fun editAccountRoles(username: String, rolesToAdd: List<String>, rolesToRemove: List<String>): AccountDetailsDto {
         val account = this.accountRepository.findByUsername(username)
             ?: throw ResourceNotFoundException("/accounts/$username")

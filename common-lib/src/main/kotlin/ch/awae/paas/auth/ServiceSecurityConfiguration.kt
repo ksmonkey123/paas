@@ -1,5 +1,6 @@
 package ch.awae.paas.auth
 
+import ch.awae.paas.audit.*
 import ch.awae.paas.rest.*
 import org.springframework.boot.context.properties.*
 import org.springframework.context.annotation.*
@@ -14,7 +15,12 @@ import org.springframework.security.web.authentication.*
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@Import(HttpAuthorizationTokenFilter::class, HttpAuthorizationTokenEntryPoint::class, RestClientConfiguration::class)
+@Import(
+    HttpAuthorizationTokenFilter::class,
+    HttpAuthorizationTokenEntryPoint::class,
+    RestClientConfiguration::class,
+    TraceInformationRequestFilter::class
+)
 @ConfigurationPropertiesScan(basePackages = ["ch.awae.paas.auth"])
 class ServiceSecurityConfiguration {
 
@@ -25,6 +31,7 @@ class ServiceSecurityConfiguration {
     fun filterChain(
         http: HttpSecurity,
         filter: HttpAuthorizationTokenFilter,
+        traceInformationRequestFilter: TraceInformationRequestFilter,
         entryPoint: HttpAuthorizationTokenEntryPoint,
         securityProperties: SecurityProperties,
     ): SecurityFilterChain {
@@ -47,6 +54,7 @@ class ServiceSecurityConfiguration {
             .httpBasic { it.disable() }
             .logout { it.disable() }
             .addFilterBefore(filter, UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(traceInformationRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
             .build()
     }
 

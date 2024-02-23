@@ -1,6 +1,7 @@
 package ch.awae.paas.service.auth.service
 
 import ch.awae.paas.*
+import ch.awae.paas.audit.*
 import ch.awae.paas.auth.*
 import ch.awae.paas.service.auth.*
 import ch.awae.paas.service.auth.domain.*
@@ -29,13 +30,15 @@ class SecurityService(
         return account
     }
 
+    @AuditLog
     @Throws(BadLoginException::class)
-    fun login(username: String, password: String): AuthToken {
+    fun login(username: String, @NoAudit password: String): AuthToken {
         val account = authenticateCredentials(username, password)
         return authTokenRepository.saveAndFlush(AuthToken.buildToken(account))
     }
 
-    fun logout(token: String) {
+    @AuditLog
+    fun logout(@NoAudit token: String) {
         authTokenRepository.deleteByTokenString(token)
     }
 
