@@ -11,8 +11,7 @@ import org.springframework.kafka.support.serializer.*
 @Configuration
 @EnableKafka
 @Import(AuditLogAspect::class, AuditLogService::class, KafkaSender::class)
-class AuditLogConfiguration(
-    @Value("\${paas.kafka.url}") val server: String,
+class AuditLogConfiguration(@Value("\${paas.kafka.url}") val server: String,
 ) {
 
     @Bean

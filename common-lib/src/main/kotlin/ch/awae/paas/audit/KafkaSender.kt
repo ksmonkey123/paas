@@ -15,7 +15,6 @@ class KafkaSender (
 
     fun send(auditLogEntry: AuditLogEntry) {
         executor.submit {
-            Thread.sleep(1000)
             kafkaTemplate.send(kafkaTopic, auditLogEntry)
         }
     }

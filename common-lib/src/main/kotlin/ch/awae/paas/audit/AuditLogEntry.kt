@@ -14,9 +14,11 @@ class AuditLogEntry() {
 
     // rest request information
     var request: Request? = null
-    var method: Method? = null
 
-    constructor(service: String, request: Request?, method: Method?) : this() {
+    // method information
+    lateinit var method: Method
+
+    constructor(service: String, request: Request?, method: Method) : this() {
         this.timestamp = Timestamp.from(Instant.now())
         this.traceId = TraceInformation.traceId!!
         this.service = service

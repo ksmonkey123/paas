@@ -11,7 +11,10 @@ spring:
   flyway:
     default-schema: ${DB_SCHEMA}
   application:
-    name: shortener-service
+    name: audit-service
 server:
   error:
     include-message: always
+
+audit:
+  consumer-group: cg-audit-service
