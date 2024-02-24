@@ -1,0 +1,34 @@
+<mat-toolbar color="primary">
+  <button mat-button type="button" routerLink="/">my.awae.ch</button>
+
+  @for (item of navItems; track item.path) {
+    <button mat-button type="button"
+            *ngIf="(auth.authInfo$ | async)?.roles?.includes(item.auth)"
+            [routerLink]="item.path"
+            routerLinkActive="nav-item-selected">
+      {{ item.title }}
+    </button>
+  }
+
+  <span class="toolbar-spacer"></span>
+  <button mat-icon-button [matMenuTriggerFor]="toolbarSettingsMenu" *ngIf="auth.authInfo$ | async">
+    <mat-icon>settings</mat-icon>
+  </button>
+</mat-toolbar>
+<mat-menu #toolbarSettingsMenu="matMenu">
+  <button mat-menu-item routerLink="/account" routerLinkActive="settings-item-selected">
+    <mat-icon>person</mat-icon>
+    Account Settings
+  </button>
+  <button mat-menu-item *ngIf="(auth.authInfo$ | async)?.admin" routerLink="/users" routerLinkActive="settings-item-selected">
+    <mat-icon>manage_accounts</mat-icon>
+    Manage Users
+  </button>
+  <button mat-menu-item *ngIf="(auth.authInfo$ | async)?.admin" routerLink="/roles" routerLinkActive="settings-item-selected">
+    <mat-icon>tune</mat-icon>
+    Manage Roles
+  </button>
+  <button mat-menu-item (click)="onLogout()">Log Out
+    <mat-icon>logout</mat-icon>
+  </button>
+</mat-menu>

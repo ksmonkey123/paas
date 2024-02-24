@@ -1,5 +1,6 @@
 package ch.awae.paas.service.auth.service
 
+import ch.awae.paas.*
 import ch.awae.paas.audit.*
 import ch.awae.paas.service.auth.*
 import ch.awae.paas.service.auth.domain.*

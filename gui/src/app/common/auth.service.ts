@@ -8,7 +8,7 @@ export interface AuthInfo {
   id: number
   username: string
   admin: boolean
-  enabled: boolean
+  roles: string[]
 }
 
 @Injectable({
