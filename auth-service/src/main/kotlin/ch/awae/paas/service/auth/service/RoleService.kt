@@ -1,9 +1,9 @@
 package ch.awae.paas.service.auth.service
 
+import ch.awae.paas.*
 import ch.awae.paas.audit.*
 import ch.awae.paas.service.auth.domain.*
 import ch.awae.paas.service.auth.dto.*
-import ch.awae.paas.service.auth.exception.*
 import jakarta.transaction.*
 import org.springframework.stereotype.*
 
