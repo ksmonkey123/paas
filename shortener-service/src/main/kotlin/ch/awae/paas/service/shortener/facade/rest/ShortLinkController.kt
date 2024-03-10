@@ -20,10 +20,12 @@ class ShortLinkController(private val svc: ShortLinkService) {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(@PathVariable id : String) {
+    fun delete(@PathVariable id: String) {
         svc.deleteShortLink(id)
     }
 
-    data class CreationRequest(val targetUrl: String)
+    data class CreationRequest(
+        val targetUrl: String
+    )
 
 }

@@ -19,7 +19,8 @@ import org.springframework.security.web.authentication.*
     HttpAuthorizationTokenFilter::class,
     HttpAuthorizationTokenEntryPoint::class,
     RestClientConfiguration::class,
-    TraceInformationRequestFilter::class
+    TraceInformationRequestFilter::class,
+    GlobalExceptionHandler::class
 )
 @ConfigurationPropertiesScan(basePackages = ["ch.awae.paas.auth"])
 class ServiceSecurityConfiguration {

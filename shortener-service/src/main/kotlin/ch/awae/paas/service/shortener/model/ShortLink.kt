@@ -1,5 +1,6 @@
 package ch.awae.paas.service.shortener.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import org.springframework.data.jpa.repository.*
 import java.time.*
@@ -9,6 +10,7 @@ class ShortLink(
     @Id
     @Column(updatable = false)
     val id : String,
+    @JsonIgnore
     @Column(updatable = false)
     val username: String,
     @Column(updatable = false)

@@ -5,13 +5,18 @@ import ch.awae.paas.audit.*
 import ch.awae.paas.auth.*
 import ch.awae.paas.service.shortener.model.*
 import jakarta.transaction.*
+import jakarta.validation.*
+import jakarta.validation.constraints.Size
+import org.hibernate.validator.constraints.*
 import org.springframework.stereotype.*
+import org.springframework.validation.annotation.Validated
 import java.util.*
 import kotlin.random.Random
 
 private const val LINK_GENERATION_ATTEMPTS = 10
 
 @Transactional
+@Validated
 @Service
 class ShortLinkService(private val repo: ShortLinkRepository) {
 
@@ -32,7 +37,7 @@ class ShortLinkService(private val repo: ShortLinkRepository) {
     fun listShortLinks(): List<ShortLink> = repo.findByUsername(AuthInfo.username!!)
 
     @AuditLog
-    fun createShortLink(targetUrl: String): ShortLink {
+    fun createShortLink(@Valid @URL targetUrl: String): ShortLink {
         return repo.save(ShortLink(getUnusedShortLink(), AuthInfo.username!!, targetUrl))
     }
 

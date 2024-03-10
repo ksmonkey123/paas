@@ -1,5 +1,8 @@
-package ch.awae.paas.service.auth.facade.rest
+package ch.awae.paas.rest
 
+import jakarta.validation.ConstraintValidator
+import jakarta.validation.ConstraintViolation
+import jakarta.validation.ConstraintViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -15,6 +18,17 @@ class GlobalExceptionHandler {
             .bindingResult
             .fieldErrors
             .map { it.defaultMessage ?: "unknown error on field ${it.field}" }
+
+        return ResponseEntity(
+            mapOf("errors" to errors, "message" to "input validation failed"),
+            HttpStatus.BAD_REQUEST
+        )
+    }
+
+    @ExceptionHandler(ConstraintViolationException::class)
+    fun handleValidationErrors(ex: ConstraintViolationException): ResponseEntity<Map<String, Any>> {
+        val errors = ex.constraintViolations
+            .map { it.message }
 
         return ResponseEntity(
             mapOf("errors" to errors, "message" to "input validation failed"),
