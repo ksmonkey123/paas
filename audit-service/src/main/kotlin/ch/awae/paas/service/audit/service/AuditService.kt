@@ -10,7 +10,6 @@ import org.springframework.stereotype.*
 @Service
 class AuditService(
     private val logEntryRepository: LogEntryRepository,
-    private val methodParameterRepository: MethodParameterRepository,
 ) {
 
     private val logger = createLogger()
@@ -21,8 +20,10 @@ class AuditService(
             return
         }
         val logEntry = LogEntry(
-            entry.timestampStart.toLocalDateTime(),
-            entry.timestampEnd.toLocalDateTime(),
+            Timing(
+                entry.timing.start.toLocalDateTime(),
+                entry.timing.end.toLocalDateTime(),
+            ),
             entry.traceId,
             entry.service,
             entry.username,
@@ -40,16 +41,10 @@ class AuditService(
                 )
             },
         )
-        val savedEntry = logEntryRepository.save(logEntry)
-        val params = entry.method.parameters.map {
-            MethodParameter(
-                savedEntry,
-                it.position,
-                it.name,
-                it.value,
-            )
-        }
-        methodParameterRepository.saveAll(params)
+
+        logEntry.method.parameter.putAll(entry.method.parameters)
+
+        logEntryRepository.save(logEntry)
     }
 
 }

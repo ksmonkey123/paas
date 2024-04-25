@@ -10,3 +10,6 @@ spring:
               - uri: http://localhost:8002/
             shortener-service:
               - uri: http://localhost:8003/
+
+  jpa:
+    show-sql: true

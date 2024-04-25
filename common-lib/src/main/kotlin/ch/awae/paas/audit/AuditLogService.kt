@@ -19,27 +19,23 @@ class AuditLogService(
         args: Array<Any?>,
         error: Throwable?,
     ) {
-        val params: List<AuditLogEntry.Method.Parameter> = if (args.isNotEmpty()) {
+        val params: Map<String, String?> = if (args.isNotEmpty()) {
             val paramInfo = method.kotlinFunction?.valueParameters
             if (paramInfo == null) {
-                emptyList()
+                emptyMap()
             } else {
                 args.mapIndexed { index, arg ->
-                    AuditLogEntry.Method.Parameter(
-                        index,
-                        paramInfo[index].name,
-                        arg?.let {
-                            if (paramInfo[index].hasAnnotation<NoAudit>()) {
-                                "<redacted>"
-                            } else {
-                                it.toString()
-                            }
+                    Pair(paramInfo[index].name ?: "arg#$index", arg?.let {
+                        if (paramInfo[index].hasAnnotation<NoAudit>()) {
+                            "<redacted>"
+                        } else {
+                            it.toString()
                         }
-                    )
-                }
+                    })
+                }.associate { p -> p }
             }
         } else {
-            emptyList()
+            emptyMap()
         }
 
         val request = TraceInformation.requestInfo?.let { AuditLogEntry.Request(it.verb, it.path) }
@@ -47,8 +43,10 @@ class AuditLogService(
         val entry = AuditLogEntry(
             TraceInformation.traceId!!,
             serviceName,
-            TraceInformation.startTimestamp!!,
-            Timestamp(System.currentTimeMillis()),
+            AuditLogEntry.Timing(
+                TraceInformation.startTimestamp!!,
+                Timestamp(System.currentTimeMillis()),
+            ),
             AuthInfo.username,
             request,
             AuditLogEntry.Method(

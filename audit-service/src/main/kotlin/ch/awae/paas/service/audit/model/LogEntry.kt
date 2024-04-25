@@ -7,8 +7,7 @@ import java.time.*
 
 @Entity
 class LogEntry(
-    val timestampStart: LocalDateTime,
-    val timestampEnd: LocalDateTime,
+    val timing: Timing,
     val traceId: String,
     val serviceName: String,
     val account: String?,
@@ -18,6 +17,14 @@ class LogEntry(
     val rootTraceId = traceId.split('$')[0]
     val parentTraceId = traceId.substring(0, traceId.lastIndexOf('$'))
 }
+
+@Embeddable
+class Timing(
+    @Column(name = "timestamp_start")
+    val start: LocalDateTime,
+    @Column(name = "timestamp_end")
+    val end: LocalDateTime,
+)
 
 @Embeddable
 class Request(
@@ -31,8 +38,14 @@ class Method(
     val method: String,
     val error: String?,
 ) {
-    @OneToMany(mappedBy = "logEntry")
-    val parameter: List<MethodParameter> = emptyList()
+    @ElementCollection
+    @CollectionTable(
+        name = "method_parameter",
+        joinColumns = [JoinColumn(name = "log_entry_id", referencedColumnName = "id")]
+    )
+    @MapKeyColumn(name = "name")
+    @Column(name = "value")
+    val parameter: MutableMap<String, String?> = mutableMapOf()
 }
 
 interface LogEntryRepository : JpaRepository<LogEntry, Long> {

@@ -7,8 +7,7 @@ data class AuditLogEntry(
     val traceId: String,
     val service: String,
     // timing information
-    val timestampStart: Timestamp,
-    val timestampEnd: Timestamp,
+    val timing: Timing,
     // security information
     val username: String? = AuthInfo.username,
     // rest request information
@@ -16,18 +15,14 @@ data class AuditLogEntry(
     // method information
     val method: Method,
 ) {
+    data class Timing(val start: Timestamp, val end: Timestamp)
+
     data class Request(val verb: String, val path: String)
 
     data class Method(
         val component: String,
         val method: String,
-        val parameters: List<Parameter>,
+        val parameters: Map<String, String?>,
         val error: String?,
-    ) {
-        data class Parameter(
-            val position: Int,
-            val name: String?,
-            val value: String?,
-        )
-    }
+    )
 }
