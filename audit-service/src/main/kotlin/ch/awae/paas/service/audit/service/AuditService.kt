@@ -35,6 +35,7 @@ class AuditService(
                 Method(
                     it.component,
                     it.method,
+                    it.error,
                 )
             },
         )

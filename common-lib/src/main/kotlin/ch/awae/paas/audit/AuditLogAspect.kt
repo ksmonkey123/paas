@@ -23,10 +23,14 @@ class AuditLogAspect(private val auditLogService: AuditLogService) {
     fun auditMethodCall(jointPoint: ProceedingJoinPoint): Any? {
         TraceInformation.push()
         val signature = jointPoint.signature as MethodSignature
-        auditLogService.recordMethodCall(signature.method, jointPoint.args)
 
         try {
-            return jointPoint.proceed()
+            val result = jointPoint.proceed()
+            auditLogService.recordMethodCall(signature.method, jointPoint.args, null)
+            return result
+        } catch (error: Exception) {
+            auditLogService.recordMethodCall(signature.method, jointPoint.args, error)
+            throw error
         } finally {
             TraceInformation.pop()
         }

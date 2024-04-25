@@ -28,6 +28,7 @@ class Request(
 class Method(
     val component: String,
     val method: String,
+    val error: String?,
 ) {
     @OneToMany(mappedBy = "logEntry")
     val parameter: List<MethodParameter> = emptyList()

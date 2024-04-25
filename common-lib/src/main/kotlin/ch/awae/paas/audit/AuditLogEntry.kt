@@ -42,11 +42,13 @@ class AuditLogEntry() {
         lateinit var component: String
         lateinit var method: String
         lateinit var parameters: List<Parameter>
+        var error: String? = null
 
-        constructor(component: String, method: String, parameters: List<Parameter>) : this() {
+        constructor(component: String, method: String, parameters: List<Parameter>, error : String?) : this() {
             this.component = component
             this.method = method
             this.parameters = parameters
+            this.error = error
         }
 
         class Parameter() {

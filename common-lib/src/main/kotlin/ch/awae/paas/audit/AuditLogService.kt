@@ -16,6 +16,7 @@ class AuditLogService(
     fun recordMethodCall(
         method: Method,
         args: Array<Any?>,
+        error: Throwable?,
     ) {
         val params: List<AuditLogEntry.Method.Parameter> = if (args.isNotEmpty()) {
             val paramInfo = method.kotlinFunction?.valueParameters
@@ -48,7 +49,8 @@ class AuditLogService(
             AuditLogEntry.Method(
                 method.declaringClass.simpleName,
                 method.name,
-                params
+                params,
+                error?.toString()
             )
         )
 

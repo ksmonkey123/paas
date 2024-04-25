@@ -1,6 +1,5 @@
 package ch.awae.paas.audit
 
-import org.springframework.http.*
 import java.util.*
 import kotlin.random.Random
 
