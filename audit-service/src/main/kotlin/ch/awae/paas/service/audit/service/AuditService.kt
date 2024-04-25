@@ -15,10 +15,6 @@ class AuditService(
     private val logger = createLogger()
 
     fun write(entry: AuditLogEntry) {
-        if (logEntryRepository.existsByTraceId(entry.traceId)) {
-            logger.warn("duplicate log entry for traceId=${entry.traceId}")
-            return
-        }
         val logEntry = LogEntry(
             Timing(
                 entry.timing.start.toLocalDateTime(),
@@ -44,6 +40,7 @@ class AuditService(
 
         logEntry.method.parameter.putAll(entry.method.parameters)
 
+        // assume uniqueness - potential duplicates
         logEntryRepository.save(logEntry)
     }
 
