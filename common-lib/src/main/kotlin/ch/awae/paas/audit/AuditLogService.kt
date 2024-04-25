@@ -1,9 +1,10 @@
 package ch.awae.paas.audit
 
+import ch.awae.paas.auth.*
 import org.springframework.beans.factory.annotation.*
-import org.springframework.kafka.core.*
 import org.springframework.stereotype.*
 import java.lang.reflect.*
+import java.sql.*
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.*
 
@@ -44,7 +45,11 @@ class AuditLogService(
         val request = TraceInformation.requestInfo?.let { AuditLogEntry.Request(it.verb, it.path) }
 
         val entry = AuditLogEntry(
+            TraceInformation.traceId!!,
             serviceName,
+            TraceInformation.startTimestamp!!,
+            Timestamp(System.currentTimeMillis()),
+            AuthInfo.username,
             request,
             AuditLogEntry.Method(
                 method.declaringClass.simpleName,

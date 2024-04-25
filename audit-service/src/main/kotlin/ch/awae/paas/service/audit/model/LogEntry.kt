@@ -7,7 +7,8 @@ import java.time.*
 
 @Entity
 class LogEntry(
-    val timestamp: LocalDateTime,
+    val timestampStart: LocalDateTime,
+    val timestampEnd: LocalDateTime,
     val traceId: String,
     val serviceName: String,
     val account: String?,

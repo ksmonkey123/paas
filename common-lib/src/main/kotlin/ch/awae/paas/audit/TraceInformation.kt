@@ -1,5 +1,6 @@
 package ch.awae.paas.audit
 
+import java.sql.Timestamp
 import java.util.*
 import kotlin.random.Random
 
@@ -11,6 +12,9 @@ object TraceInformation {
 
     val traceId: String?
         get() = traceIdHolder.get()?.toString()
+
+    val startTimestamp: Timestamp?
+        get() = traceIdHolder.get()?.timestamp
 
     val requestInfo: RequestInformation?
         get() = requestHolder.get()
@@ -43,7 +47,8 @@ object TraceInformation {
 
     private data class TraceIdLayer(
         val id: String,
-        val parent: TraceIdLayer?
+        val parent: TraceIdLayer?,
+        val timestamp: Timestamp = Timestamp(System.currentTimeMillis())
     ) {
         override fun toString(): String {
             return if (parent != null) {

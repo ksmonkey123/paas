@@ -21,7 +21,8 @@ class AuditService(
             return
         }
         val logEntry = LogEntry(
-            entry.timestamp.toLocalDateTime(),
+            entry.timestampStart.toLocalDateTime(),
+            entry.timestampEnd.toLocalDateTime(),
             entry.traceId,
             entry.service,
             entry.username,
