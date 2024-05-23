@@ -14,6 +14,10 @@ annotation class AuditLog
 @Retention(AnnotationRetention.RUNTIME)
 annotation class NoAudit
 
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class RedactedAudit
+
 @Aspect
 @Component
 class AuditLogAspect(private val auditLogService: AuditLogService) {

@@ -9,6 +9,7 @@ import ch.awae.paas.service.auth.exception.*
 import ch.awae.paas.service.auth.validation.*
 import jakarta.transaction.*
 import org.hibernate.validator.constraints.*
+import org.springframework.data.repository.query.Param
 import org.springframework.security.crypto.password.*
 import org.springframework.stereotype.*
 
@@ -63,7 +64,7 @@ class AccountService(
     @AuditLog
     fun editAccount(
         @Length(min = 5) username: String,
-        @NoAudit @ValidPasswordFormat password: String?,
+        @RedactedAudit @ValidPasswordFormat password: String?,
         admin: Boolean?,
         enabled: Boolean?,
     ): AccountSummaryDto {

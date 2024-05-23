@@ -7,7 +7,7 @@ import jakarta.persistence.*
 abstract class IdBaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     val id : Long = 0
 
     override fun equals(other: Any?) = equalByField(other, IdBaseEntity::id)

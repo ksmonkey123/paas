@@ -13,7 +13,7 @@ class TraceInformationRequestFilter : OncePerRequestFilter() {
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val traceId :String? = request.getHeader("TraceID")
+        val traceId: String? = request.getHeader("TraceID")
         TraceInformation.init(traceId, TraceInformation.RequestInformation(request.servletPath, request.method))
         filterChain.doFilter(request, response)
     }

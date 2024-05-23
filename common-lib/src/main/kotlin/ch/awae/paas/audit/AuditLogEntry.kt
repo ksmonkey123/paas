@@ -22,7 +22,7 @@ data class AuditLogEntry(
     data class Method(
         val component: String,
         val method: String,
-        val parameters: Map<String, String?>,
+        val parameters: Map<String, String>,
         val error: String?,
     )
 }

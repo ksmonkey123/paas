@@ -18,3 +18,7 @@ inline fun <reified T : Any> T.equalByField(other: Any?, fieldExtractor: (T) -> 
 }
 
 inline fun <reified T : Any> T.createLogger(): Logger = LoggerFactory.getLogger(T::class.java)
+
+inline fun <T> ThreadLocal<T>.update(f: (T) -> T) {
+    set(f(get()))
+}

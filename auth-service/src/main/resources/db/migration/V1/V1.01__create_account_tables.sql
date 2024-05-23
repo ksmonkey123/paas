@@ -1,6 +1,9 @@
+create sequence account_seq start 1 increment 50;
+create sequence auth_token_seq start 1 increment 50;
+
 create table account
 (
-    id       bigint      not null generated always as identity,
+    id       bigint      not null,
     username varchar(30) not null,
     password varchar(72) not null,
     enabled  boolean     not null,
@@ -12,7 +15,7 @@ create table account
 
 create table auth_token
 (
-    id bigint not null generated always as identity,
+    id            bigint      not null,
     token_string  varchar(88) not null,
     account_id    bigint      not null,
     creation_time timestamp   not null,

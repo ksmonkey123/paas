@@ -1,6 +1,8 @@
 package ch.awae.paas.audit
 
-import java.sql.Timestamp
+import ch.awae.paas.*
+import java.sql.*
+import java.time.*
 import java.util.*
 import kotlin.random.Random
 
@@ -14,26 +16,27 @@ object TraceInformation {
         get() = traceIdHolder.get()?.toString()
 
     val startTimestamp: Timestamp?
-        get() = traceIdHolder.get()?.timestamp
+        get() = traceIdHolder.get()?.startTimestamp
 
     val requestInfo: RequestInformation?
         get() = requestHolder.get()
 
-    fun init(traceId: String? = null, requestInformation: RequestInformation? = null) {
-        traceIdHolder.set(TraceIdLayer(traceId ?: generateId(), null))
+    fun init(externalTraceId: String? = null, requestInformation: RequestInformation? = null) {
+        val traceId = if (externalTraceId != null) {
+            externalTraceId + "/" + generateId()
+        } else {
+            generateId()
+        }
+        traceIdHolder.set(TraceIdLayer(traceId, null))
         requestHolder.set(requestInformation)
     }
 
     fun push() {
-        traceIdHolder.update { parent -> TraceIdLayer(generateId(), parent) }
+        traceIdHolder.update { current -> current!!.nextChild() }
     }
 
     fun pop() {
         traceIdHolder.update { current -> current?.parent }
-    }
-
-    private fun <T> ThreadLocal<T>.update(f: (T) -> T) {
-        set(f(get()))
     }
 
     private fun generateId(): String {
@@ -45,17 +48,24 @@ object TraceInformation {
         val verb: String,
     )
 
-    private data class TraceIdLayer(
+    private class TraceIdLayer(
         val id: String,
         val parent: TraceIdLayer?,
-        val timestamp: Timestamp = Timestamp(System.currentTimeMillis())
     ) {
+        var childCounter = 0
+        val startTimestamp: Timestamp = Timestamp.from(Instant.now())
+
         override fun toString(): String {
             return if (parent != null) {
                 "$parent$$id"
             } else {
                 id
             }
+        }
+
+        fun nextChild(): TraceIdLayer {
+            childCounter++
+            return TraceIdLayer(childCounter.toString(16).padStart(2, '0'), this)
         }
     }
 

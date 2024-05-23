@@ -14,8 +14,7 @@ class LogEntry(
     val request: Request?,
     val method: Method,
 ) : IdBaseEntity() {
-    val rootTraceId = traceId.split('$')[0]
-    val parentTraceId = traceId.substring(0, traceId.lastIndexOf('$'))
+    val traceRoot = traceId.split('$').first()
 }
 
 @Embeddable

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.*
 import org.springframework.stereotype.*
 import java.lang.reflect.*
 import java.sql.*
+import kotlin.reflect.*
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.*
 
@@ -19,20 +20,13 @@ class AuditLogService(
         args: Array<Any?>,
         error: Throwable?,
     ) {
-        val params: Map<String, String?> = if (args.isNotEmpty()) {
+        val params: Map<String, String> = if (args.isNotEmpty()) {
             val paramInfo = method.kotlinFunction?.valueParameters
             if (paramInfo == null) {
                 emptyMap()
             } else {
-                args.mapIndexed { index, arg ->
-                    Pair(paramInfo[index].name ?: "arg#$index", arg?.let {
-                        if (paramInfo[index].hasAnnotation<NoAudit>()) {
-                            "<redacted>"
-                        } else {
-                            it.toString()
-                        }
-                    })
-                }.associate { p -> p }
+                args.mapIndexedNotNull { index, arg -> mapParameter(index, paramInfo[index], arg) }
+                    .associate { p -> p }
             }
         } else {
             emptyMap()
@@ -58,6 +52,16 @@ class AuditLogService(
         )
 
         kafkaSender.send(entry)
+    }
+
+    private fun mapParameter(index: Int, parameter: KParameter, arg: Any?): Pair<String, String>? {
+        val key = parameter.name ?: "arg#$index"
+        return when {
+            arg == null -> null
+            parameter.hasAnnotation<NoAudit>() -> null
+            parameter.hasAnnotation<RedactedAudit>() -> Pair(key, "<redacted>")
+            else -> Pair(key, arg.toString())
+        }
     }
 
 }
