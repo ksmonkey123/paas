@@ -1,4 +1,2 @@
 server:
   port: 8003
-
-DB_SCHEMA: shortener

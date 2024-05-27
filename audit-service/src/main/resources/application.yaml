@@ -4,9 +4,9 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     hikari:
-      schema: ${DB_SCHEMA}
+      schema: audit
   flyway:
-    default-schema: ${DB_SCHEMA}
+    default-schema: audit
   application:
     name: audit-service
 server:

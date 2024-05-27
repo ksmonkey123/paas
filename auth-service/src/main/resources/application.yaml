@@ -4,9 +4,9 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     hikari:
-      schema: ${DB_SCHEMA}
+      schema: auth
   flyway:
-    default-schema: ${DB_SCHEMA}
+    default-schema: auth
   application:
     name: auth-service
 server:

@@ -1,4 +1,2 @@
 server:
   port: 8002
-
-DB_SCHEMA: audit

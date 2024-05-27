@@ -1,4 +1,2 @@
 server:
   port: 8001
-
-DB_SCHEMA: auth
