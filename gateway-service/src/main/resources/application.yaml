@@ -6,29 +6,21 @@ spring:
       discovery:
         locator:
           enabled: true
+      default-filters:
+        - StripPrefix=2
       routes:
         # auth service
         - id: auth-service
           predicates:
             - Path=/rest/auth/**
           uri: lb://auth-service
-          filters:
-            - StripPrefix=2
         # audit service
         - id: audit-service
           predicates:
             - Path=/rest/audit/**
           uri: lb://audit-service
-          filters:
-            - StripPrefix=2
         # shortener service
         - id: shortener-service
           predicates:
             - Path=/rest/shortener/**
-          uri: lb://shortener-service
-          filters:
-            - StripPrefix=2
-        - id: shortener-access
-          predicates:
-            - Path=/s/**
           uri: lb://shortener-service
