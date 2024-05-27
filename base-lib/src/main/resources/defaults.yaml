@@ -16,11 +16,7 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: validate
-
 paas:
-  kafka:
-    url: ${KAFKA_BOOTSTRAP_SERVERS}
-
   audit:
     kafka:
       topic: paas-audit-log
