@@ -26,6 +26,7 @@
         <module>auth-service</module>
         <module>audit-service</module>
         <module>shortener-service</module>
+        <module>bookkeeping-service</module>
     </modules>
 
     <build>
