@@ -36,7 +36,8 @@ class HttpAuthorizationTokenFilter(val authServiceClient: AuthService) : OncePer
 
         if (auth != null) {
             logger.info("authenticated user '${auth.principal}' for ${request.method} ${request.requestURI}")
-        } else {
+        } else if (!request.requestURI.startsWith("/actuator/")) {
+            // do not log actuator endpoints
             logger.info("no authentication provided for ${request.method} ${request.requestURI}")
         }
 

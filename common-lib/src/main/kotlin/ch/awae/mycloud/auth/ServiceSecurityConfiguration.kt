@@ -41,11 +41,12 @@ class ServiceSecurityConfiguration {
             .anonymous { it.disable() }
             .authorizeHttpRequests {
                 val whitelist = securityProperties.publicEndpoints
+
                 if (whitelist.isNullOrEmpty()) {
-                    it.requestMatchers("/error").permitAll()
+                    it.requestMatchers("/error", "/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 } else {
-                    it.requestMatchers("/error", *whitelist.toTypedArray()).permitAll()
+                    it.requestMatchers("/error", "/actuator/**", *whitelist.toTypedArray()).permitAll()
                         .anyRequest().authenticated()
                 }
             }

@@ -1,4 +1,4 @@
-FROM openjdk:17-alpine
+FROM eclipse-temurin:17
 
 ARG JAR_NAME
 ENV JAR_NAME ${JAR_NAME}
@@ -6,5 +6,6 @@ ENV JAR_NAME ${JAR_NAME}
 COPY target/${JAR_NAME}.jar /
 
 EXPOSE 8080
+EXPOSE 8081
 
 ENTRYPOINT java -jar ${JAR_NAME}.jar
