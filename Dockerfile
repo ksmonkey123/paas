@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17
+FROM eclipse-temurin:21
 
 ARG JAR_NAME
 ENV JAR_NAME ${JAR_NAME}
