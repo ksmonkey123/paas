@@ -8,7 +8,7 @@
         <version>3.2.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>ch.awae.paas</groupId>
+    <groupId>ch.awae.mycloud</groupId>
     <artifactId>base-pom</artifactId>
     <version>1.0.x-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -35,7 +35,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>ch.awae.paas</groupId>
+            <groupId>ch.awae.mycloud</groupId>
             <artifactId>base-lib</artifactId>
             <version>1.0.x-SNAPSHOT</version>
         </dependency>
@@ -134,13 +134,12 @@
                     <configuration>
                         <images>
                             <image>
-                                <name>ksmonkey123/paas_${project.artifactId}:${project.version}</name>
+                                <name>ksmonkey123/mycloud_${project.artifactId}</name>
                                 <build>
                                     <contextDir>${project.basedir}</contextDir>
                                     <dockerFile>../Dockerfile</dockerFile>
                                     <tags>
-                                        <tag>${project.version}-${git.commit.id.abbrev}</tag>
-                                        <tag>snapshot</tag>
+                                        <tag>${git.commit.id.abbrev}</tag>
                                     </tags>
                                 </build>
                             </image>

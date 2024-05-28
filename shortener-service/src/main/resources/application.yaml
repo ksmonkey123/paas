@@ -12,6 +12,6 @@ spring:
 server:
   error:
     include-message: always
-paas:
+mycloud:
   security:
     public-endpoints: /s/**

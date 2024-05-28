@@ -16,7 +16,8 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: validate
-paas:
+
+mycloud:
   audit:
     kafka:
-      topic: paas-audit-log
+      topic: mycloud-audit-log
