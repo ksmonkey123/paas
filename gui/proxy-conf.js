@@ -1,7 +1,10 @@
 module.exports = [
   {
-    context: ['/rest', '/s'],
+    context: ['/rest'],
     target: 'http://localhost:8000/',
-    logLevel: 'debug'
+  },
+  {
+    context: ['/s'],
+    target: 'http://localhost:8003/',
   }
 ]

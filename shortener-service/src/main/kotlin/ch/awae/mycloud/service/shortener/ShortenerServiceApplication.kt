@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.*
 @SpringBootApplication
 @EnableTransactionManagement
 @Import(ClientSecurityConfiguration::class, AuditLogConfiguration::class)
-class ShortenerService
+class ShortenerServiceApplication
 
 fun main(args: Array<String>) {
-    SpringApplication.run(ShortenerService::class.java, *args)
+    SpringApplication.run(ShortenerServiceApplication::class.java, *args)
 }
