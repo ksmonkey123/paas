@@ -11,23 +11,25 @@ class AuthenticationService(
     private val accountRepository: AccountRepository
 ) : AuthService {
 
+    fun createAuthInfo(account: Account, tokenString: String) = AuthInfo(
+        account.username,
+        account.admin,
+        account.roles
+            .filter { it.enabled }
+            .map { it.name }
+            .let { roles ->
+                if (account.admin) {
+                    roles + arrayOf("admin", "user")
+                } else {
+                    roles + "user"
+                }
+            },
+        tokenString
+    )
+
     override fun authenticateToken(tokenString: String): AuthInfo? {
         return accountRepository.findActiveByTokenString(tokenString)?.let { account ->
-            AuthInfo(
-                account.username,
-                account.admin,
-                account.roles
-                    .filter { it.enabled }
-                    .map { it.name }
-                    .let { roles ->
-                        if (account.admin) {
-                            roles + arrayOf("admin", "user")
-                        } else {
-                            roles + "user"
-                        }
-                    },
-                tokenString
-            )
+            createAuthInfo(account, tokenString)
         }
     }
 

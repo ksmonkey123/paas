@@ -14,6 +14,7 @@ import org.springframework.stereotype.*
 @Service
 @Transactional
 class SecurityService(
+    private val authenticationService: AuthenticationService,
     private val accountRepository: AccountRepository,
     private val authTokenRepository: AuthTokenRepository,
     private val passwordEncoder: PasswordEncoder,
@@ -34,13 +35,16 @@ class SecurityService(
     @Throws(BadLoginException::class)
     fun login(username: String, @NoAudit password: String): AuthToken {
         val account = authenticateCredentials(username, password)
-        return authTokenRepository.saveAndFlush(AuthToken.buildToken(account))
+        val token = AuthToken.buildToken(account)
+
+        AuthInfo.impersonate(authenticationService.createAuthInfo(account, token.tokenString))
+
+        return authTokenRepository.saveAndFlush(token)
     }
 
     @AuditLog
     fun logout(@NoAudit token: String) {
         authTokenRepository.deleteByTokenString(token)
     }
-
 
 }

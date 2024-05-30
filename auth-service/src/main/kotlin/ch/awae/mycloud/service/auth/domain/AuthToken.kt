@@ -17,8 +17,6 @@ class AuthToken private constructor(
     @JoinColumn(name = "account_id", updatable = false)
     val account: Account,
 ) : IdBaseEntity() {
-    @Column(updatable = false)
-    val creationTime: LocalDateTime = LocalDateTime.now()
 
     companion object {
         fun buildToken(account: Account): AuthToken {

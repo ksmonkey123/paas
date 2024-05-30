@@ -20,28 +20,22 @@ class HttpAuthorizationTokenFilter(val authServiceClient: AuthService) : OncePer
         val ctx = SecurityContextHolder.getContext()
         val authHeader = request.getHeader("Authorization")
 
-        val auth: Authentication? = if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        val auth = if (authHeader != null && authHeader.startsWith("Bearer ")) {
             // BEARER TOKEN FOR "REAL USER" ACCOUNT AUTH
             val tokenString = authHeader.substring(7)
-            authServiceClient.authenticateToken(tokenString)?.let {
-                UsernamePasswordAuthenticationToken(
-                    it.username,
-                    it,
-                    it.roles.map(::SimpleGrantedAuthority)
-                )
-            }
+            authServiceClient.authenticateToken(tokenString)
         } else {
             null
         }
 
         if (auth != null) {
-            logger.info("authenticated user '${auth.principal}' for ${request.method} ${request.requestURI}")
+            logger.info("authenticated user '${auth.username}' for ${request.method} ${request.requestURI}")
         } else if (!request.requestURI.startsWith("/actuator/")) {
             // do not log actuator endpoints
             logger.info("no authentication provided for ${request.method} ${request.requestURI}")
         }
 
-        ctx.authentication = auth
+        AuthInfo.impersonate(auth)
 
         filterChain.doFilter(request, response)
     }
