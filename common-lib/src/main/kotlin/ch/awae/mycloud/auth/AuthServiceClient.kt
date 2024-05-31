@@ -20,23 +20,25 @@ class AuthServiceClient(
         return cache.get(tokenString)
     }
 
-    fun fetchToken(tokenString: String): AuthInfo? {
+    private fun fetchToken(tokenString: String): AuthInfo? {
         val headers = HttpHeaders()
-        headers.setBearerAuth(tokenString)
+        headers.set("Authorization", tokenString)
         val entity = HttpEntity(null, headers)
         return try {
-            http.exchange<AuthInfoDto>("http://auth-service/authenticate", HttpMethod.GET, entity).body?.let {
-                AuthInfo(it.username, it.admin, it.roles, tokenString)
-            }
+            http.exchange<AuthInfoDto>(
+                "http://auth-service/authenticate",
+                HttpMethod.GET,
+                entity
+            ).body?.let(::convertDto)
         } catch (e: Unauthorized) {
             null
         }
     }
 
-    private data class AuthInfoDto(
-        val username: String,
-        val admin: Boolean,
-        val roles: List<String>
-    )
+    private fun convertDto(dto: AuthInfoDto): AuthInfo {
+        return when (dto.type) {
+            AuthInfoDto.AuthType.USER -> UserAuthInfo(dto.username, dto.roles, dto.token)
+        }
+    }
 
 }

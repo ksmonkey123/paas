@@ -27,13 +27,15 @@ class SecurityController(private val securityService: SecurityService) {
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun logout() {
-        logger.info("handling logout request for ${AuthInfo.username}")
-        securityService.logout(AuthInfo.info!!.token)
+        val auth = AuthInfo.info as UserAuthInfo
+
+        logger.info("handling logout request for ${auth.username}")
+        securityService.logout(auth.token)
     }
 
     @GetMapping("/authenticate")
     @PreAuthorize("hasAuthority('user')")
-    fun getOwnAccountInfo(): AuthInfo = AuthInfo.info!!
+    fun getOwnAccountInfo(): AuthInfoDto = AuthInfoDto.of(AuthInfo.info!!)
 
     data class LoginRequest(val username: String, val password: String)
     data class LoginResponse(val token: String)

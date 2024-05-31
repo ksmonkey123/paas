@@ -1,7 +1,7 @@
 package ch.awae.mycloud.service.audit.kafka
 
-import ch.awae.mycloud.*
 import ch.awae.mycloud.audit.*
+import ch.awae.mycloud.auth.*
 import ch.awae.mycloud.service.audit.service.*
 import org.springframework.kafka.annotation.*
 import org.springframework.stereotype.*
@@ -10,11 +10,11 @@ import org.springframework.stereotype.*
 @KafkaListener(topics = ["\${mycloud.audit.kafka.topic}"], containerFactory = "auditKafkaListenerContainerFactory")
 class KafkaConsumer(private val svc: AuditService) {
 
-    private val logger = createLogger()
-
     @KafkaHandler
     fun handleAuditLogEntry(entry: AuditLogEntry) {
-        svc.write(entry)
+        AuthInfo.impersonate("audit-kafka") {
+            svc.write(entry)
+        }
     }
 
 }

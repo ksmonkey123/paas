@@ -1,13 +1,17 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {BehaviorSubject, map, Observable, Subject, takeUntil} from "rxjs";
-import { HttpClient } from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 
 export const TOKEN_NAME = "auth_token"
 
 export interface AuthInfo {
-  id: number
   username: string
   admin: boolean
+  roles: string[]
+}
+
+interface AuthInfoDto {
+  username: string
   roles: string[]
 }
 
@@ -39,11 +43,15 @@ export class AuthService implements OnDestroy {
   }
 
   public fetch() {
-    this.http.get<AuthInfo>('rest/auth/authenticate')
+    this.http.get<AuthInfoDto>('rest/auth/authenticate')
       .pipe(takeUntil(this.closer$))
       .subscribe({
         next: (user) => {
-          this.authInfo$.next(user)
+          this.authInfo$.next({
+            username: user.username,
+            roles: user.roles,
+            admin: user.roles.includes("admin"),
+          })
         }
       })
   }

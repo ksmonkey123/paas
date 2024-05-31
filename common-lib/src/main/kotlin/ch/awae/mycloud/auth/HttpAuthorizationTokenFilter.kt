@@ -2,9 +2,6 @@ package ch.awae.mycloud.auth
 
 import jakarta.servlet.*
 import jakarta.servlet.http.*
-import org.springframework.security.authentication.*
-import org.springframework.security.core.*
-import org.springframework.security.core.authority.*
 import org.springframework.security.core.context.*
 import org.springframework.stereotype.*
 import org.springframework.web.filter.*
@@ -17,16 +14,7 @@ class HttpAuthorizationTokenFilter(val authServiceClient: AuthService) : OncePer
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val ctx = SecurityContextHolder.getContext()
-        val authHeader = request.getHeader("Authorization")
-
-        val auth = if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            // BEARER TOKEN FOR "REAL USER" ACCOUNT AUTH
-            val tokenString = authHeader.substring(7)
-            authServiceClient.authenticateToken(tokenString)
-        } else {
-            null
-        }
+        val auth = request.getHeader("Authorization")?.let(authServiceClient::authenticateToken)
 
         if (auth != null) {
             logger.info("authenticated user '${auth.username}' for ${request.method} ${request.requestURI}")
@@ -35,7 +23,7 @@ class HttpAuthorizationTokenFilter(val authServiceClient: AuthService) : OncePer
             logger.info("no authentication provided for ${request.method} ${request.requestURI}")
         }
 
-        AuthInfo.impersonate(auth)
+        SecurityContextHolder.getContext().authentication = auth?.toAuthentication()
 
         filterChain.doFilter(request, response)
     }

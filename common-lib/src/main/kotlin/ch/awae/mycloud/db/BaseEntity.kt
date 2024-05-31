@@ -2,7 +2,10 @@ package ch.awae.mycloud.db
 
 import ch.awae.mycloud.auth.*
 import jakarta.persistence.*
+import org.slf4j.*
 import java.time.*
+
+private val log = LoggerFactory.getLogger(BaseEntity::class.java)
 
 @MappedSuperclass
 abstract class BaseEntity {
@@ -22,11 +25,11 @@ abstract class BaseEntity {
     @Column(name = "mut_time")
     private var _mutationTimestamp: LocalDateTime? = null
 
-    val creationUser: String?
-        get() = _creationUser
+    val creationUser: String
+        get() = _creationUser!!
 
-    val mutationUser: String?
-        get() = _mutationUser
+    val mutationUser: String
+        get() = _mutationUser!!
 
     val creationTimestamp: LocalDateTime
         get() = _creationTimestamp!!
@@ -41,7 +44,9 @@ abstract class BaseEntity {
     }
 
     private fun updateManagementFields() {
-        val user = AuthInfo.username
+        val user = AuthInfo.username ?: "dummy".also {
+            log.warn("persisting ${this::class.simpleName} without auth context")
+        }
         val time = LocalDateTime.now()
 
         if (_creationTimestamp == null) {

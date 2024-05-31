@@ -1,6 +1,7 @@
 package ch.awae.mycloud.service.auth.config
 
 import ch.awae.mycloud.*
+import ch.awae.mycloud.auth.*
 import ch.awae.mycloud.service.auth.domain.*
 import jakarta.transaction.Transactional
 import org.springframework.boot.CommandLineRunner
@@ -21,13 +22,15 @@ class InitialUserCreator(
 
         if (adminCount == 0L) {
             logger.warn("no administrator found. creating default 'admin'")
-            accountRepository.save(
-                Account(
-                    username = "admin",
-                    password = passwordEncoder.encode("admin"),
-                    admin = true,
+            AuthInfo.impersonate("init") {
+                accountRepository.save(
+                    Account(
+                        username = "admin",
+                        password = passwordEncoder.encode("admin"),
+                        admin = true,
+                    )
                 )
-            )
+            }
         } else {
             logger.info("found $adminCount administrator(s). no action required")
         }

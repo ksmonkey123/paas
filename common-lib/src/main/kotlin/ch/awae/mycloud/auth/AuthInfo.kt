@@ -2,38 +2,56 @@ package ch.awae.mycloud.auth
 
 import org.springframework.security.authentication.*
 import org.springframework.security.core.*
-import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.authority.*
 import org.springframework.security.core.context.*
 
-data class AuthInfo(
-    val username: String,
-    val admin: Boolean,
-    val roles: List<String>,
-    val token: String
-) {
+sealed interface AuthInfo {
+    val username: String
+    val roles: List<String>
+
+    fun toAuthentication(): Authentication {
+        return UsernamePasswordAuthenticationToken(
+            this.username,
+            this,
+            this.roles.map(::SimpleGrantedAuthority)
+        )
+    }
+
     companion object {
 
-        private fun getAuthentication(): Authentication? = SecurityContextHolder.getContext().authentication
-
         val info: AuthInfo?
-            get() = getAuthentication()?.credentials as? AuthInfo
+            get() = SecurityContextHolder.getContext().authentication?.credentials as? AuthInfo
 
         val username: String?
             get() = info?.username
 
-        val roles: List<String>?
-            get() = info?.roles
+        inline fun <T> impersonate(username: String, action: () -> T): T {
+            val ctx = SecurityContextHolder.getContext()
+            val backupCtx = ctx.authentication
 
-        fun impersonate(info: AuthInfo?) {
-            val auth = info?.let {
-                UsernamePasswordAuthenticationToken(
-                    it.username,
-                    it,
-                    it.roles.map(::SimpleGrantedAuthority)
-                )
+            try {
+                ctx.authentication = BasicImpersonation(username).toAuthentication()
+                return action()
+            } finally {
+                ctx.authentication = backupCtx
             }
-            SecurityContextHolder.getContext().authentication = auth
         }
-
     }
+}
+
+sealed interface TokenBackedAuthInfo : AuthInfo {
+    val token: String
+}
+
+data class UserAuthInfo(
+    override val username: String,
+    override val roles: List<String>,
+    override val token: String,
+) : TokenBackedAuthInfo
+
+data class BasicImpersonation(
+    override val username: String
+) : AuthInfo {
+    override val roles: List<String>
+        get() = emptyList()
 }

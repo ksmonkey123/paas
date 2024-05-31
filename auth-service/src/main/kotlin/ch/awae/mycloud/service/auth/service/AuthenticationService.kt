@@ -11,9 +11,8 @@ class AuthenticationService(
     private val accountRepository: AccountRepository
 ) : AuthService {
 
-    fun createAuthInfo(account: Account, tokenString: String) = AuthInfo(
+    fun createUserAuthInfo(account: Account, tokenString: String): UserAuthInfo = UserAuthInfo(
         account.username,
-        account.admin,
         account.roles
             .filter { it.enabled }
             .map { it.name }
@@ -28,8 +27,16 @@ class AuthenticationService(
     )
 
     override fun authenticateToken(tokenString: String): AuthInfo? {
+        return if (tokenString.startsWith("Bearer ")) {
+            authenticateBearerToken(tokenString.substring(7))
+        } else {
+            null
+        }
+    }
+
+    private fun authenticateBearerToken(tokenString: String): UserAuthInfo? {
         return accountRepository.findActiveByTokenString(tokenString)?.let { account ->
-            createAuthInfo(account, tokenString)
+            createUserAuthInfo(account, tokenString)
         }
     }
 

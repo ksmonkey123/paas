@@ -15,6 +15,7 @@ class AuditService(
     private val logger = createLogger()
 
     fun write(entry: AuditLogEntry) {
+        logger.info("handling traceId='${entry.traceId}' for ${entry.service}:${entry.method.component}#${entry.method.method}")
         val logEntry = LogEntry(
             Timing(
                 entry.timing.start.toLocalDateTime(),

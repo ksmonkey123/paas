@@ -37,9 +37,9 @@ class SecurityService(
         val account = authenticateCredentials(username, password)
         val token = AuthToken.buildToken(account)
 
-        AuthInfo.impersonate(authenticationService.createAuthInfo(account, token.tokenString))
-
-        return authTokenRepository.saveAndFlush(token)
+        AuthInfo.impersonate(username) {
+            return authTokenRepository.saveAndFlush(token)
+        }
     }
 
     @AuditLog
